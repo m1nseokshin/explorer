@@ -28,11 +28,15 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: npm
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # 저장소 설정에서 Pages를 켜 두지 않아도 이 워크플로가 직접 켠다.
+          # 없으면 첫 배포가 "Get Pages site failed / Not Found"로 죽는다.
+          enablement: true
 
       - name: Install dependencies
         run: npm ci
