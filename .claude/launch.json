@@ -1,0 +1,18 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "melt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/minseok/Desktop/code/Something/melt", "run", "dev"],
+      "port": 3001
+    },
+    {
+      "name": "explorer",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

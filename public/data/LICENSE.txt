@@ -1,0 +1,22 @@
+이 디렉터리의 데이터 파일(stars.bin, stars.meta.json, constellations.json,
+boundaries.bin, milkyway.bin)은 아래 원본에서 파생되었습니다.
+
+  d3-celestial — https://github.com/ofrohn/d3-celestial
+  Copyright (c) 2015-2019 Olaf Frohn
+  BSD 3-Clause License
+
+원본 성표는 Hipparcos / Yale Bright Star Catalogue / IAU 별 이름 목록에서
+유래하며, 별자리 경계는 Delporte(1930)의 IAU 공식 경계를 J2000으로
+세차보정한 것입니다. 은하수는 밝기 등고선(등광도선) 5단계 폴리곤이며,
+이 앱은 그것을 점구름으로 래스터화해 씁니다.
+
+BSD 3-Clause 전문: https://github.com/ofrohn/d3-celestial/blob/master/LICENSE
+
+land.bin은 world-atlas TopoJSON에서 파생되었습니다.
+
+  world-atlas — https://github.com/topojson/world-atlas (ISC License)
+  원본 경계는 Natural Earth (public domain) 입니다.
+
+주의: 렌더 단계에서 앱이 덧붙이는 것들 — 은하수의 먼지 얼룩(프랙탈 잡음),
+은하 중심부 증광과 색조 — 은 관측 데이터가 아니라 시각적 표현이다.
+형태·범위·밝기 단계와 암흑 성운(폴리곤 구멍)만이 원본에서 온 값이다.

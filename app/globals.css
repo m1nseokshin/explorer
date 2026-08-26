@@ -1,0 +1,305 @@
+/* Pretendard (본문) — 한글 동적 서브셋 CDN */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import "tailwindcss";
+
+/* Gmarket Sans Medium (타이틀/리드카피) */
+@font-face {
+  font-family: "GmarketSansMedium";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- DESIGN.md (Spasex-inspired) tokens: pure black canvas, white type ---- */
+:root {
+  --canvas-night: #000000;
+  --canvas-night-soft: #0a0a0a;
+  --on-primary: #ffffff;
+  --on-primary-mute: #f0f0fa;
+  --hairline-on-dark: #3a3a3f;
+  --ink-mute: #5a5a5f;
+
+  /* ---- HUD 가독성: 별 위에 텍스트가 놓여도 읽히게 한다 ---- */
+  --hud-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+
+  /* ---- 유일한 액센트: 조준 레티클. 흰 십자선은 별과 구분되지 않아 '기능적'으로 실패한다.
+         청록 대신 호박색인 이유 — 장파장은 암순응(간상체)을 보존한다. ---- */
+  --accent-reticle: #ffb95e;
+
+  /* ---- 별 렌더링 토큰 ---- */
+  --star-mag-limit: 8;
+  --star-size-min: 1.2;
+  --star-size-max: 4.6;
+  --star-size-gamma: 1.6;
+  --star-alpha-gamma: 0.75;
+  --star-saturation: 0.55;
+  --star-cool: #9bb0ff;
+  --star-neutral: #ffffff;
+  --star-warm: #ffb86b;
+
+  /* ---- 선 어휘: 색상이 아니라 '점선 패턴 + 불투명도'로 의미를 구분한다.
+         흑백 원칙의 직계 후손이며, 야간모드 리맵에도 그대로 살아남는다. ---- */
+  --line-constellation: rgba(255, 255, 255, 0.28);
+  --line-constellation-active: rgba(255, 255, 255, 0.85);
+  --line-boundary: rgba(255, 255, 255, 0.1);
+  --line-horizon: rgba(255, 255, 255, 0.35);
+  --line-ecliptic: rgba(255, 255, 255, 0.18);
+  --line-meridian: rgba(255, 255, 255, 0.12);
+}
+
+/* ---- 야간 시야 모드: 토큰을 통째로 리맵한다 ---- */
+[data-vision="night"] {
+  --on-primary: #ff6a52;
+  --on-primary-mute: #d4523f;
+  --hairline-on-dark: #5a1e18;
+  --accent-reticle: #ff8a3d;
+  --star-saturation: 0;
+}
+
+@theme inline {
+  --color-background: var(--canvas-night);
+  --color-surface: var(--canvas-night-soft);
+  --color-foreground: var(--on-primary);
+  --color-foreground-mute: var(--on-primary-mute);
+  --color-hairline: var(--hairline-on-dark);
+  --color-muted: #9a9aa2;
+  --color-reticle: var(--accent-reticle);
+  --font-display: "GmarketSansMedium", "Pretendard Variable", Pretendard, "Arial Narrow", sans-serif;
+  --font-ui: "Pretendard Variable", Pretendard, Arial, Verdana, sans-serif;
+  --font-sans: "Pretendard Variable", Pretendard, Arial, sans-serif;
+}
+
+* {
+  user-select: auto;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--canvas-night);
+  color: var(--on-primary);
+  font-family: "Pretendard Variable", Pretendard, Arial, sans-serif;
+  overflow-x: hidden;
+  /* 한글은 음절 단위로 끊기면 읽기 나쁘다. 어절(띄어쓰기) 단위로 줄바꿈한다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
+
+/*
+ * ⚠️ @layer components 안에 둔다.
+ *
+ * Tailwind는 `@import "tailwindcss"`를 파일 맨 위에서 읽으므로, 이 클래스들을
+ * 레이어 없이 아래에 두면 나중에 선언된 쪽이 이겨서 `text-xl` 같은 유틸리티가
+ * 통째로 무시된다. 그래서 `type-display-lg text-sm`이라고 써도 28px로 나왔다.
+ * components 레이어에 넣으면 유틸리티가 정상적으로 덮어쓴다.
+ */
+@layer components {
+  /* ---- typography tiers ({typography.display-*}, uppercase, tight leading, wide tracking) ---- */
+  .type-display-xxl {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis-weight: none;
+    font-size: clamp(40px, 7.5vw, 80px);
+    line-height: 1.34;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 640px) {
+    .type-display-xxl {
+      line-height: 1.18;
+    }
+  }
+
+  .type-display-xl {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis-weight: none;
+    font-size: clamp(34px, 5.5vw, 60px);
+    line-height: 1.34;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .type-display-lg {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis-weight: none;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.38;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+  }
+
+  .type-eyebrow {
+    font-family: var(--font-ui);
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 2;
+    letter-spacing: 0.96px;
+    text-transform: uppercase;
+  }
+
+  .type-button-cap {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 0.94;
+    letter-spacing: 1.17px;
+    text-transform: uppercase;
+  }
+
+  .type-caption {
+    font-family: var(--font-ui);
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .type-body-lg {
+    font-size: 16px;
+    line-height: 1.78;
+    letter-spacing: 0.2px;
+  }
+
+  /* ---- {button-ghost-on-dark}: the only marketing CTA ---- */
+  .btn-ghost {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 0.94;
+    letter-spacing: 1.17px;
+    text-transform: uppercase;
+    color: var(--on-primary);
+    background: transparent;
+    border: 1px solid var(--on-primary);
+    border-radius: 32px;
+    padding: 18px 24px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover {
+    background: var(--on-primary);
+    color: #000000;
+  }
+
+  /* ---- inline link on dark: white, persistent underline ---- */
+  .link-dark {
+    color: var(--on-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* ---- scroll hint: soft blink ---- */
+@keyframes soft-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.scroll-hint {
+  animation: soft-blink 2.4s ease-in-out infinite;
+}
+
+/* ---- scroll reveal: austere fade + rise ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---- {type-mono-hud}: 벤치마크의 "mono 금지" 규칙에 대한 한정적 예외.
+       az/alt/FOV/LST는 사용자 입력 없이 계속 바뀐다. 가변폭 숫자로 두면 글자폭이
+       흔들려 '트래킹 실패'처럼 보인다 — 타이포 문제가 아니라 기능 문제다.
+       사용자 입력 없이 변하는 '숫자 표시'에만 허용. ---- */
+.type-mono-hud {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.4px;
+}
+
+/* ---- 몰입(AR) 라우트 전용 ---- */
+.immersive-root {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  background: var(--canvas-night);
+}
+
+/* 상/하단 엣지 스크림 — HUD 텍스트가 영상 위에 맨몸으로 놓이지 않게 하는 계약 */
+.scrim-top {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.scrim-bottom {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.hud-shadow {
+  text-shadow: var(--hud-shadow);
+}
+
+/* HUD 글래스: 임의의 배경 위에서 컨트롤 가독성을 보장하는 유일한 수단.
+   장식이 아니며 마케팅 화면으로 넘어가서는 안 된다. */
+.hud-pill {
+  background: color-mix(in srgb, var(--canvas-night-soft) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--hairline-on-dark);
+  border-radius: 9999px;
+  color: var(--on-primary);
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+.hud-pill[data-active="true"] {
+  background: var(--on-primary);
+  border-color: var(--on-primary);
+  color: #000000;
+}
+
+/* 한 손·야외·장갑 — 터치 타깃은 44가 아니라 56 */
+.tap-56 {
+  min-width: 56px;
+  min-height: 56px;
+}
+
