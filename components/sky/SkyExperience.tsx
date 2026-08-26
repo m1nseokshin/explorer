@@ -852,7 +852,8 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
       <CompassStrip readoutRef={readoutRef} reference="true" />
       <AltitudeLadder readoutRef={readoutRef} />
 
-      <GestureGuide action={action} handStatus={handOn ? "running" : "off"} />
+      {/* 실제 상태를 그대로 넘긴다 — 실패를 '꺼짐'으로 뭉개면 원인이 안 보인다. */}
+      <GestureGuide action={action} handStatus={handWanted ? hand.status : "idle"} />
 
       {/* 이름은 화면에 한 번만. 라벨 레이어가 켜져 있으면 조준한 별자리 이름은
           이미 제자리에 떠 있고(그때 함께 밝아진다), 레티클에 또 적으면 같은

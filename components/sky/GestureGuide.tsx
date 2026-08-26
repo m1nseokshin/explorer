@@ -3,11 +3,16 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/i18n";
+import type { HandStatus } from "@/lib/useHandTracking";
 import type { HandAction } from "./HandControls";
 
 interface Props {
   action: HandAction;
-  handStatus: "running" | "off";
+  /**
+   * ⚠️ 켬/꺼짐 두 값으로 뭉개면 안 된다. 실패도 '꺼져 있음'으로 보여서,
+   *    사용자는 자기가 끈 줄 알고 왜 안 되는지 영영 알 수 없다.
+   */
+  handStatus: HandStatus;
 }
 
 /** 왼쪽 가장자리에서 이 거리 안에서 시작한 스와이프만 서랍을 연다(px). */
@@ -50,6 +55,51 @@ const EFFECT: Record<string, { ko: string; en: string }> = {
 export default function GestureGuide({ action, handStatus }: Props) {
   const { lang } = useLanguage();
   const t = (ko: string, en: string) => (lang === "ko" ? ko : en);
+
+  /** 지금 상태를 한 줄로. 실패는 원인과 다음 행동까지 적는다. */
+  const note = (() => {
+    switch (handStatus) {
+      case "running":
+        return action.kind === "idle"
+          ? t(
+              "손을 못 찾고 있습니다. 카메라 앞에 손바닥을 펴 보세요 — 잡히면 뼈대가 그려집니다.",
+              "No hand yet. Hold an open palm up to the camera — a skeleton appears once it locks on.",
+            )
+          : null;
+      case "pending":
+        return t("카메라를 여는 중…", "Opening the camera…");
+      case "loading":
+        return t("손 인식 모델을 불러오는 중…", "Loading the hand model…");
+      case "denied":
+        return t(
+          "카메라를 열지 못했습니다. 주소창의 자물쇠에서 카메라를 허용해 주세요.",
+          "The camera didn't open. Allow it from the lock icon in the address bar.",
+        );
+      case "busy":
+        return t(
+          "카메라를 다른 앱이 쓰고 있습니다. 그 앱을 닫고 다시 켜 주세요.",
+          "Another app is using the camera. Close it and turn this back on.",
+        );
+      case "insecure":
+        return t(
+          "보안 연결에서만 카메라를 쓸 수 있습니다 (https 또는 localhost).",
+          "The camera needs a secure connection (https or localhost).",
+        );
+      case "unsupported":
+      case "not-found":
+        return t("이 기기에서는 손 인식을 쓸 수 없습니다.", "Hand tracking isn't available here.");
+      case "failed":
+        return t(
+          "손 인식 모델을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.",
+          "The hand model failed to load. Reload and try again.",
+        );
+      default:
+        return t(
+          "손 인식이 꺼져 있습니다. 드래그와 휠로 둘러볼 수 있어요.",
+          "Hand tracking is off — drag and scroll instead.",
+        );
+    }
+  })();
   const [open, setOpen] = useState(false);
 
   // 팬 중이면 'open'이 아니라 'pan'이 활성이다
@@ -58,15 +108,29 @@ export default function GestureGuide({ action, handStatus }: Props) {
 
   // 손 인식을 켜는 순간에만 잠깐 펼친다 — 그때가 조작법이 필요한 유일한 순간이고,
   // 계속 띄워 두면 하늘의 왼쪽 위를 영구히 가린다.
-  const wasRunning = useRef(handStatus === "running");
+  const prev = useRef<HandStatus>(handStatus);
   useEffect(() => {
-    if (handStatus === "running" && !wasRunning.current) {
+    const failed =
+      handStatus === "denied" ||
+      handStatus === "busy" ||
+      handStatus === "failed" ||
+      handStatus === "not-found" ||
+      handStatus === "unsupported" ||
+      handStatus === "insecure";
+
+    // 실패는 닫지 않는다. 4초 뒤 사라지면 왜 안 되는지 읽을 새가 없다.
+    if (failed && prev.current !== handStatus) {
+      setOpen(true);
+      prev.current = handStatus;
+      return;
+    }
+    if (handStatus === "running" && prev.current !== "running") {
       setOpen(true);
       const id = setTimeout(() => setOpen(false), 4200);
-      wasRunning.current = true;
+      prev.current = handStatus;
       return () => clearTimeout(id);
     }
-    wasRunning.current = handStatus === "running";
+    prev.current = handStatus;
   }, [handStatus]);
 
   // 왼쪽 가장자리에서 오른쪽으로 스윽 밀면 열린다.
@@ -178,12 +242,9 @@ export default function GestureGuide({ action, handStatus }: Props) {
         })}
       </ul>
 
-      {handStatus === "off" && (
-        <p className="type-caption mt-2.5 max-w-44 border-t border-hairline pt-2.5 text-muted">
-          {t(
-            "손 인식이 꺼져 있습니다. 드래그와 휠로 둘러볼 수 있어요.",
-            "Hand tracking is off — drag and scroll instead.",
-          )}
+      {note && (
+        <p className="type-caption mt-2.5 max-w-52 border-t border-hairline pt-2.5 text-muted">
+          {note}
         </p>
       )}
       </div>
