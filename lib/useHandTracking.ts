@@ -104,12 +104,12 @@ export function useHandTracking(active: boolean) {
     try {
       const { FilesetResolver, HandLandmarker } = await import("@mediapipe/tasks-vision");
       const fileset = await FilesetResolver.forVisionTasks(asset("/mediapipe/wasm"));
-      const landmarker = await HandLandmarker.createFromOptions(fileset, {
+      const options = (delegate: "GPU" | "CPU") => ({
         baseOptions: {
           modelAssetPath: asset("/models/hand_landmarker.task"),
-          delegate: "GPU",
+          delegate,
         },
-        runningMode: "VIDEO",
+        runningMode: "VIDEO" as const,
         // 손 하나만 본다. 두 손을 켜면 인식 부하가 두 배가 되고,
         // 지금 제스처 어휘에는 한 손이면 충분하다.
         numHands: 1,
@@ -117,6 +117,16 @@ export function useHandTracking(active: boolean) {
         minHandPresenceConfidence: 0.5,
         minTrackingConfidence: 0.5,
       });
+
+      // ⚠️ GPU 델리게이트는 WebGL 컨텍스트를 하나 더 만든다. 하늘이 이미
+      //    하나를 쓰고 있어서 기기에 따라 여기서 실패하는데, 그때 통째로
+      //    포기하면 사용자에겐 '손 인식이 안 된다'로만 보인다. CPU로 물러선다.
+      let landmarker;
+      try {
+        landmarker = await HandLandmarker.createFromOptions(fileset, options("GPU"));
+      } catch {
+        landmarker = await HandLandmarker.createFromOptions(fileset, options("CPU"));
+      }
       landmarkerRef.current = landmarker as unknown as typeof landmarkerRef.current;
     } catch {
       stop();

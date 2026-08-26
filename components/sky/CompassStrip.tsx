@@ -39,21 +39,31 @@ export default function CompassStrip({ readoutRef, reference }: Props) {
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const { az, fov } = readoutRef.current;
-      // 화면 폭에 대응하는 각도 범위. 수평 화각은 대략 fov × 1.6으로 잡는다.
-      const span = Math.min(180, fov * 1.6);
-      const half = span / 2;
+
+      // ⚠️ 수평 화각을 'fov × 1.6'으로 어림하면 안 된다. 종횡비에서 바로 나온다.
+      //    그리고 원근 투영은 각도에 선형이 아니라 tan에 비례한다 — 선형으로
+      //    두면 눈금이 하늘의 실제 방위와 어긋난 채 그럴듯하게 흐른다.
+      const vw = window.innerWidth;
+      const tanHalfV = Math.tan((fov * Math.PI) / 360);
+      const tanHalfH = tanHalfV * (vw / Math.max(window.innerHeight, 1));
 
       for (const [deg, node] of nodes.current) {
         if (!node) continue;
         let rel = deg - az;
         if (rel > 180) rel -= 360;
         if (rel < -180) rel += 360;
-        if (Math.abs(rel) > half) {
+        const r = (rel * Math.PI) / 180;
+        if (Math.abs(r) > 1.4) {
+          node.style.opacity = "0";
+          continue;
+        }
+        const ndc = Math.tan(r) / tanHalfH; // -1..1, 양수가 오른쪽
+        if (Math.abs(ndc) > 1) {
           node.style.opacity = "0";
           continue;
         }
         node.style.opacity = "1";
-        node.style.transform = `translate3d(${(0.5 + rel / span) * 100}vw, 0, 0) translateX(-50%)`;
+        node.style.transform = `translate3d(${(0.5 + ndc / 2) * vw}px, 0, 0) translateX(-50%)`;
       }
     };
     raf = requestAnimationFrame(tick);
