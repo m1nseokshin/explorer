@@ -69,7 +69,7 @@ export const STAR_LORE: Record<string, StarLore> = {
     en: "Long said to be named for the helmsman of Menelaus’s fleet. The second-brightest star in the sky, and still used by spacecraft as an attitude reference.",
   },
   Arcturus: {
-    ko: "그리스어 아르크투로스, ‘곰지기’. 큰곰자리 뒤를 따라가는 자리에 있어 붙은 이름이다. 폴리네시아 항해자들은 이 별이 천정에 오는 위도로 하와이를 찾아갔다.",
+    ko: "그리스어 아르크투로스, ‘곰지기’. 큰곰자리 뒤를 따라가는 자리에 있어 붙은 이름이다. 폴리네시아 항해사들은 이 별이 천정에 오는 위도로 하와이를 찾아갔다.",
     en: "Greek Arktouros, ‘bear guard’, for the way it follows Ursa Major. Polynesian navigators found Hawai‘i by the latitude at which this star passes overhead.",
   },
   "Rigil Kentaurus": {

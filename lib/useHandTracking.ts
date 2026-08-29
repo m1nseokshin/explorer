@@ -138,6 +138,14 @@ export function useHandTracking(active: boolean) {
     return "running";
   }, [stop]);
 
+  /**
+   * 진단용 계수. 손 인식이 '그냥 안 될' 때 어디서 막혔는지 가르는 유일한 단서다.
+   *   infers 0        → 추론이 아예 안 불린다 (영상이 안 흐른다)
+   *   infers↑ hits 0  → 추론은 도는데 손을 못 찾는다 (조명·거리·프레이밍)
+   *   errors↑         → 추론이 던진다 (lastError를 볼 것)
+   */
+  const statsRef = useRef({ infers: 0, hits: 0, errors: 0, lastError: "" });
+
   // 인식 루프
   useEffect(() => {
     if (status !== "running") return;
@@ -163,7 +171,12 @@ export function useHandTracking(active: boolean) {
       let res: { landmarks: Landmark[][] };
       try {
         res = lm.detectForVideo(v, now);
-      } catch {
+        statsRef.current.infers++;
+      } catch (err) {
+        // ⚠️ 조용히 삼키면 안 된다. 매 프레임 던지고 있어도 화면에는 아무 일도
+        //    일어나지 않아서 '그냥 안 되는' 상태가 된다.
+        statsRef.current.errors++;
+        statsRef.current.lastError = (err as Error)?.message?.slice(0, 120) ?? "unknown";
         return;
       }
 
@@ -175,6 +188,7 @@ export function useHandTracking(active: boolean) {
         return;
       }
       landmarksRef.current = hand;
+      statsRef.current.hits++;
       const state = readHand(hand, pinchingRef.current, true);
       pinchingRef.current = state.kind === "pinch";
       handRef.current = state;
@@ -211,5 +225,5 @@ export function useHandTracking(active: boolean) {
     [stop],
   );
 
-  return { status, videoRef, handRef, landmarksRef, start, stop };
+  return { status, videoRef, handRef, landmarksRef, statsRef, start, stop };
 }

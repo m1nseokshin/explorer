@@ -12,7 +12,7 @@ export const site = {
 
 export const nav = [
   { href: "/", ko: "홈", en: "Home" },
-  { href: "/explore/", ko: "항해", en: "Voyage" },
+  { href: "/explore/", ko: "항해", en: "Explore" },
   { href: "/timelapse/", ko: "타임랩스", en: "Timelapse" },
   { href: "/about/", ko: "소개", en: "About" },
 ];

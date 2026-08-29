@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import SkyClient from "@/components/sky/SkyClient";
 
 export const metadata: Metadata = {
-  title: "Voyage",
+  title: "Explore",
   description: "손으로 하늘을 항해하며 별로 길을 찾습니다.",
 };
 
