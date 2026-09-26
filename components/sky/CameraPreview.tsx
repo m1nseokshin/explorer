@@ -40,30 +40,7 @@ const H = 111; // 4:3
 export default function CameraPreview({ videoRef, landmarksRef, statsRef, status }: Props) {
   const { lang } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const holderRef = useRef<HTMLDivElement>(null);
   const statLineRef = useRef<HTMLParagraphElement>(null);
-
-  // 영상 요소를 이 창 안으로 옮긴다 — 인식용 <video>는 하나뿐이라
-  // 새로 만들지 않고 자리만 바꾼다.
-  useEffect(() => {
-    const v = videoRef.current;
-    const holder = holderRef.current;
-    if (!v || !holder) return;
-    const prevParent = v.parentElement;
-    const prevClass = v.className;
-    const prevStyle = v.getAttribute("style");
-
-    v.className = "absolute inset-0 h-full w-full object-cover";
-    v.style.transform = "scaleX(-1)";
-    holder.appendChild(v);
-
-    return () => {
-      v.className = prevClass;
-      if (prevStyle) v.setAttribute("style", prevStyle);
-      else v.removeAttribute("style");
-      prevParent?.appendChild(v);
-    };
-  }, [videoRef]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -79,6 +56,25 @@ export default function CameraPreview({ videoRef, landmarksRef, statsRef, status
     const draw = () => {
       raf = requestAnimationFrame(draw);
       ctx.clearRect(0, 0, W, H);
+
+      // ⚠️ <video>를 이 창 안으로 옮기지 않는다. 미디어 요소를 DOM에서 떼었다
+      //    붙이면 브라우저가 로드 알고리즘을 다시 돌려 재생이 초기화될 수 있다.
+      //    프레임만 캔버스에 옮겨 그린다 — 요소는 있던 자리에 그대로 둔다.
+      const v = videoRef.current;
+      if (v && v.readyState >= 2) {
+        ctx.save();
+        // 전면 카메라 원본은 좌우가 반대다
+        ctx.translate(W, 0);
+        ctx.scale(-1, 1);
+        const vr = v.videoWidth / Math.max(v.videoHeight, 1);
+        const cr = W / H;
+        // object-cover: 넘치는 쪽을 잘라 채운다
+        const dw = vr > cr ? H * vr : W;
+        const dh = vr > cr ? H : W / vr;
+        ctx.drawImage(v, (W - dw) / 2, (H - dh) / 2, dw, dh);
+        ctx.restore();
+      }
+
       const lm = landmarksRef.current;
       if (!lm) return;
 
@@ -106,7 +102,7 @@ export default function CameraPreview({ videoRef, landmarksRef, statsRef, status
     };
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [landmarksRef]);
+  }, [landmarksRef, videoRef]);
 
   // 진단 한 줄. 추론이 도는지 / 손을 찾는지 / 던지는지를 가른다.
   useEffect(() => {
@@ -144,7 +140,6 @@ export default function CameraPreview({ videoRef, landmarksRef, statsRef, status
       }}
     >
       <div
-        ref={holderRef}
         className="relative overflow-hidden rounded-xl border border-hairline bg-black/70"
         style={{ width: W, height: H }}
       >

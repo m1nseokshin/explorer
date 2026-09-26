@@ -191,3 +191,27 @@ export const CITIES: City[] = [
   { ko: "아문센-스콧 기지", en: "Amundsen–Scott", lat: -89.9975, lon: 0, rank: 2 },
   { ko: "세종기지", en: "King Sejong Station", lat: -62.2233, lon: -58.7869, rank: 3 },
 ];
+
+/** 대원 거리(km). 근처 도시를 찾는 데 쓴다. */
+export function distanceKm(aLat: number, aLon: number, bLat: number, bLon: number): number {
+  const R = 6371;
+  const d = Math.PI / 180;
+  const s =
+    Math.sin(aLat * d) * Math.sin(bLat * d) +
+    Math.cos(aLat * d) * Math.cos(bLat * d) * Math.cos((aLon - bLon) * d);
+  return R * Math.acos(Math.min(1, Math.max(-1, s)));
+}
+
+/** 주어진 좌표에서 가장 가까운 도시 (최대 400km 이내) */
+export function nearestCity(lat: number, lon: number): City | null {
+  let best: City | null = null;
+  let bestD = Infinity;
+  for (const c of CITIES) {
+    const d = distanceKm(lat, lon, c.lat, c.lon);
+    if (d < bestD) {
+      bestD = d;
+      best = c;
+    }
+  }
+  return best && bestD < 400 ? best : null;
+}

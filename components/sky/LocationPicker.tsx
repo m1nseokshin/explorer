@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CITIES, type City } from "@/lib/cities";
+import { CITIES, distanceKm, type City } from "@/lib/cities";
 import { useLanguage } from "@/lib/i18n";
 import { loadLand, type LandRings } from "@/lib/land";
 import WorldMap, { type WorldMapHandle } from "./WorldMap";
@@ -58,15 +58,7 @@ function ScaleBar({ kmPerPx, zoom }: { kmPerPx: number; zoom: number }) {
   );
 }
 
-/** 대원 거리(km). 근처 도시를 찾는 데 쓴다. */
-function distanceKm(aLat: number, aLon: number, bLat: number, bLon: number) {
-  const R = 6371;
-  const d = Math.PI / 180;
-  const s =
-    Math.sin(aLat * d) * Math.sin(bLat * d) +
-    Math.cos(aLat * d) * Math.cos(bLat * d) * Math.cos((aLon - bLon) * d);
-  return R * Math.acos(Math.min(1, Math.max(-1, s)));
-}
+
 
 /**
  * 관측 위치 선택.

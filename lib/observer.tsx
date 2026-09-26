@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { DEFAULT_CITY } from "./cities";
+import { DEFAULT_CITY, nearestCity } from "./cities";
 
 export type LocationSource = "gps" | "manual" | "default";
 
@@ -113,8 +113,11 @@ export function ObserverProvider({ children }: { children: ReactNode }) {
         (pos) => {
           // enableHighAccuracy:false 는 의도적이다. 1km 위치 오차는 별을 0.01°
           // 움직인다 — GPS 정밀도는 배터리와 콜드스타트 지연만 먹는다.
-          setGpsFix({ lat: pos.coords.latitude, lon: pos.coords.longitude });
-          setLocation(pos.coords.latitude, pos.coords.longitude, "gps");
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const city = nearestCity(lat, lon);
+          setGpsFix({ lat, lon });
+          setLocation(lat, lon, "gps", city?.ko);
           setGpsStatus("granted");
           resolve(true);
         },

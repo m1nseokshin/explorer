@@ -36,7 +36,6 @@ export function useHandTracking(active: boolean) {
   const handRef = useRef<HandState | null>(null);
   /** 스켈레톤 그리기용 원시 랜드마크 (미러링 전). */
   const landmarksRef = useRef<Landmark[] | null>(null);
-  const pinchingRef = useRef(false);
   const rafRef = useRef(0);
   const lastVideoTime = useRef(-1);
   const lastInferRef = useRef(0);
@@ -139,6 +138,25 @@ export function useHandTracking(active: boolean) {
   }, [stop]);
 
   /**
+   * <video>가 마운트되는 순간 스트림을 붙인다.
+   *
+   * ⚠️ 이게 없으면 손 인식이 통째로 죽는다. <video>는 하늘 화면에서만
+   *    마운트되는데, 인트로의 '항해 시작'에서 start()를 부르면 그 시점에
+   *    videoRef.current가 null이라 srcObject를 붙일 곳이 없다. 그런데 권한도
+   *    받고 모델도 뜨기 때문에("Graph successfully started running") 로그는
+   *    멀쩡해 보이고, readyState만 0에서 안 올라간 채 추론이 한 번도 안 돈다.
+   */
+  const attachVideo = useCallback((el: HTMLVideoElement | null) => {
+    videoRef.current = el;
+    if (el && streamRef.current && el.srcObject !== streamRef.current) {
+      el.srcObject = streamRef.current;
+      void el.play().catch(() => {
+        /* playsInline + muted면 통과한다 */
+      });
+    }
+  }, []);
+
+  /**
    * 진단용 계수. 손 인식이 '그냥 안 될' 때 어디서 막혔는지 가르는 유일한 단서다.
    *   infers 0        → 추론이 아예 안 불린다 (영상이 안 흐른다)
    *   infers↑ hits 0  → 추론은 도는데 손을 못 찾는다 (조명·거리·프레이밍)
@@ -162,7 +180,13 @@ export function useHandTracking(active: boolean) {
 
       const v = videoRef.current;
       const lm = landmarkerRef.current;
-      if (!v || !lm || v.readyState < 2) return;
+      if (!v || !lm) return;
+      // 어떤 순서로 마운트됐든 스트림이 붙어 있게 한다 — 마지막 안전망이다.
+      if (streamRef.current && v.srcObject !== streamRef.current) {
+        v.srcObject = streamRef.current;
+        void v.play().catch(() => {});
+      }
+      if (v.readyState < 2) return;
       // 같은 프레임을 두 번 넣으면 MediaPipe가 타임스탬프 오류를 던진다
       if (v.currentTime === lastVideoTime.current) return;
       lastVideoTime.current = v.currentTime;
@@ -184,13 +208,11 @@ export function useHandTracking(active: boolean) {
       if (!hand || hand.length < 21) {
         handRef.current = null;
         landmarksRef.current = null;
-        pinchingRef.current = false;
         return;
       }
       landmarksRef.current = hand;
       statsRef.current.hits++;
-      const state = readHand(hand, pinchingRef.current, true);
-      pinchingRef.current = state.kind === "pinch";
+      const state = readHand(hand, true);
       handRef.current = state;
     };
 
@@ -225,5 +247,5 @@ export function useHandTracking(active: boolean) {
     [stop],
   );
 
-  return { status, videoRef, handRef, landmarksRef, statsRef, start, stop };
+  return { status, videoRef, attachVideo, handRef, landmarksRef, statsRef, start, stop };
 }

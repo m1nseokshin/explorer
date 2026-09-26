@@ -61,9 +61,16 @@ export default function HomeHero() {
             "For thousands of years sailors fixed their position by the stars — the altitude of Polaris simply was your latitude. This puts that old instrument back in your hands, aimed at the sky above wherever you happen to be standing. You sail it with your hand.",
           )}
         </motion.p>
-        <motion.div {...rise(0.32)} className="pointer-events-auto mt-14">
+        <motion.div {...rise(0.32)} className="pointer-events-auto mt-12 flex flex-wrap items-center justify-center gap-4">
           <Link href="/explore/" className="btn-ghost inline-block">
             {t("항해 시작", "Set sail")}
+          </Link>
+          <Link
+            href="/timelapse/"
+            className="type-button-cap inline-flex items-center gap-2 rounded-full border border-hairline px-6 py-4 text-muted transition-colors duration-300 hover:border-foreground hover:text-foreground"
+          >
+            <span>⟳</span>
+            {t("시간여행 모드", "Timelapse")}
           </Link>
         </motion.div>
       </motion.div>
