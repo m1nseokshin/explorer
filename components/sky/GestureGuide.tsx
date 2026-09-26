@@ -13,6 +13,8 @@ interface Props {
    *    사용자는 자기가 끈 줄 알고 왜 안 되는지 영영 알 수 없다.
    */
   handStatus: HandStatus;
+  /** 상세 정보 패널이 열려 있는지 여부 */
+  hasSelection?: boolean;
 }
 
 /** 왼쪽 가장자리에서 이 거리 안에서 시작한 스와이프만 서랍을 연다(px). */
@@ -26,23 +28,14 @@ const OPEN_SLOP = 52;
  */
 const OPEN_RATIO = 2.2;
 
-type Row = { id: HandAction["kind"] | "pan"; ko: string; en: string; glyph: string };
+type RowId = "open" | "pinch" | "grasp";
+type Row = { id: RowId; ko: string; en: string; glyph: string };
 
 const ROWS: Row[] = [
-  { id: "pan", ko: "펼침 · 젓기", en: "Open · sweep", glyph: "↔" },
-  { id: "open", ko: "펼침 · 앞뒤", en: "Open · push · pull", glyph: "✋" },
-  { id: "fist", ko: "주먹", en: "Fist", glyph: "✊" },
-  { id: "pinch", ko: "핀치", en: "Pinch", glyph: "🤏" },
+  { id: "open", ko: "손바닥 펴고 움직이기", en: "Move open palm", glyph: "✋" },
+  { id: "pinch", ko: "엄지·검지 벌리기·좁히기", en: "Spread / narrow thumb & index", glyph: "🤏" },
+  { id: "grasp", ko: "주먹 쥐었다 펴기", en: "Close, then open hand", glyph: "✊" },
 ];
-
-const EFFECT: Record<string, { ko: string; en: string }> = {
-  pan: { ko: "둘러보기", en: "Look around" },
-  // 한 축에 양방향이라 한 줄로 적는다. '확대'와 '축소'를 따로 적으면
-  // 서로 다른 자세인 것처럼 읽힌다.
-  open: { ko: "다가가기 · 물러나기", en: "Closer · farther" },
-  fist: { ko: "처음 배율로", en: "Reset zoom" },
-  pinch: { ko: "별 선택", en: "Select" },
-};
 
 /**
  * 제스처 사전 겸 실시간 인식 표시.
@@ -52,7 +45,7 @@ const EFFECT: Record<string, { ko: string; en: string }> = {
  * 그래서 이 목록은 장식이 아니라 인터페이스 그 자체이며, 지금 인식된 제스처를
  * 되비쳐 주는 것으로 '내 손이 잡히고 있다'는 확인까지 겸한다.
  */
-export default function GestureGuide({ action, handStatus }: Props) {
+export default function GestureGuide({ action, handStatus, hasSelection = false }: Props) {
   const { lang } = useLanguage();
   const t = (ko: string, en: string) => (lang === "ko" ? ko : en);
 
@@ -102,9 +95,30 @@ export default function GestureGuide({ action, handStatus }: Props) {
   })();
   const [open, setOpen] = useState(false);
 
-  // 팬 중이면 'open'이 아니라 'pan'이 활성이다
-  const activeId: string =
-    action.kind === "open" ? (action.panning ? "pan" : "open") : action.kind;
+  // 주먹은 '쥐었다 펴기'의 앞 절반이라 같은 줄을 밝힌다. 무장된 채로 손을
+  // 펴는 도중(none)에도 그 줄이 켜져 있어야 '지금 펴면 된다'가 이어진다.
+  const activeId: RowId | null =
+    action.armed || action.kind === "fist"
+      ? "grasp"
+      : action.kind === "open"
+        ? "open"
+        : action.kind === "pinch"
+          ? "pinch"
+          : null;
+
+  const effect = (id: RowId) => {
+    switch (id) {
+      case "open":
+        return t("하늘 끌기", "Drag the sky");
+      // 한 축에 양방향이라 한 줄로 적는다.
+      case "pinch":
+        return t("확대 · 축소", "Zoom in · out");
+      case "grasp":
+        // 무장되면 '다음에 무슨 일이 일어나는지'를 적는다
+        if (action.armed) return hasSelection ? t("펴면 닫힘", "Open to close") : t("펴면 열림", "Open to inspect");
+        return hasSelection ? t("닫기", "Close") : t("자세히 보기", "Inspect");
+    }
+  };
 
   // 손 인식을 켜는 순간에만 잠깐 펼친다 — 그때가 조작법이 필요한 유일한 순간이고,
   // 계속 띄워 두면 하늘의 왼쪽 위를 영구히 가린다.
@@ -235,7 +249,7 @@ export default function GestureGuide({ action, handStatus }: Props) {
                 className="type-eyebrow ml-auto whitespace-nowrap leading-none"
                 style={{ color: on ? "var(--accent-reticle)" : "var(--color-muted)" }}
               >
-                {t(EFFECT[r.id].ko, EFFECT[r.id].en)}
+                {effect(r.id)}
               </span>
             </motion.li>
           );

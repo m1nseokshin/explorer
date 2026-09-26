@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useMotionValue, type PanInfo } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Figure } from "@/lib/figure";
 import { useLanguage } from "@/lib/i18n";
 
@@ -21,9 +21,21 @@ export interface SkyObject {
 interface Props {
   object: SkyObject | null;
   onClose: () => void;
+  /**
+   * 설명을 읽는 속도로 저절로 내려 준다. 손 조작 중에는 스크롤할 방법이 없어서,
+   * 이게 없으면 첫 화면 아래의 유래·구성 별·수치를 영영 못 읽는다.
+   */
+  autoScroll?: boolean;
 }
 
 const PEEK_HEIGHT = 120; // 미니 상태 높이 (px)
+
+/** 자동 스크롤 속도(px/s). 본문 한 줄(27px)을 2초쯤에 넘긴다 — 소리 내어 읽는 속도다. */
+const AUTO_SCROLL_PX_PER_SEC = 14;
+/** 열린 뒤 움직이기 시작할 때까지(ms). 제목과 그림을 먼저 볼 시간이다. */
+const AUTO_SCROLL_DELAY_MS = 2500;
+/** 사용자가 직접 스크롤·터치하면 이만큼 멈췄다 다시 간다(ms). 손이 먼저다. */
+const AUTO_SCROLL_RESUME_MS = 4000;
 
 /**
  * 별자리 그림.
@@ -78,15 +90,64 @@ const FLING_VELOCITY = 550;
  * 볼 수 있었고 '얼마나 빠르게 내렸나'는 못 봤다. 짧게 톡 튕겨서 닫는 동작이
  * 안 되면 네이티브 시트처럼 느껴지지 않는다.
  */
-export default function ObjectPanel({ object, onClose }: Props) {
+export default function ObjectPanel({ object, onClose, autoScroll = false }: Props) {
   const { lang } = useLanguage();
   const [expanded, setExpanded] = useState(false);
   const [isNarrow, setIsNarrow] = useState(false);
   const dragY = useMotionValue(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (object) setExpanded(false);
   }, [object]);
+  // 손 조작 중에는 늘 펼쳐 둔다 — 접힌 시트(120px)에서는 흘려 줄 본문이 안 보이고,
+  // 손으로는 시트를 끌어올릴 수도 없다.
+  const open = expanded || autoScroll;
+
+  // ── 자동 스크롤 ──────────────────────────────────────────────────
+  // DOM에 직접 쓴다. 초당 60회 state를 바꾸면 패널 전체가 다시 그려진다.
+  useEffect(() => {
+    if (!object || !autoScroll) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = 0;
+
+    let raf = 0;
+    let last = performance.now();
+    let pausedUntil = last + AUTO_SCROLL_DELAY_MS;
+    // scrollTop은 정수로 반올림되므로 소수 위치를 따로 들고 간다.
+    // 안 그러면 14px/s × 16ms = 0.2px가 매번 버려져서 영영 안 움직인다.
+    let pos = 0;
+
+    const pause = () => {
+      pausedUntil = performance.now() + AUTO_SCROLL_RESUME_MS;
+    };
+    el.addEventListener("wheel", pause, { passive: true });
+    el.addEventListener("pointerdown", pause);
+    el.addEventListener("touchstart", pause, { passive: true });
+
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
+      if (now < pausedUntil) {
+        // 사용자가 옮겨 둔 자리에서 이어 간다
+        pos = el.scrollTop;
+        return;
+      }
+      const max = el.scrollHeight - el.clientHeight;
+      if (pos >= max) return;
+      pos = Math.min(max, pos + AUTO_SCROLL_PX_PER_SEC * dt);
+      el.scrollTop = pos;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener("wheel", pause);
+      el.removeEventListener("pointerdown", pause);
+      el.removeEventListener("touchstart", pause);
+    };
+  }, [object, autoScroll]);
 
   useEffect(() => {
     const sync = () => setIsNarrow(window.innerWidth < 640);
@@ -103,7 +164,7 @@ export default function ObjectPanel({ object, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const height = expanded ? "75dvh" : `${PEEK_HEIGHT}px`;
+  const height = open ? "75dvh" : `${PEEK_HEIGHT}px`;
 
   /**
    * 드래그를 놓았을 때의 판정.
@@ -169,7 +230,7 @@ export default function ObjectPanel({ object, onClose }: Props) {
             >
               <div className="mb-2 h-1.5 w-12 rounded-full bg-muted/60" />
               <AnimatePresence initial={false}>
-                {!expanded && (
+                {!open && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -198,12 +259,13 @@ export default function ObjectPanel({ object, onClose }: Props) {
             </button>
 
             <div
+              ref={scrollRef}
               onScroll={() => {
                 if (!expanded) setExpanded(true);
               }}
               className="flex-1 overflow-y-auto px-6 pb-12 pt-2 sm:px-8 sm:pt-24"
             >
-              <div className={!expanded ? "hidden sm:block" : "block"}>
+              <div className={!open ? "hidden sm:block" : "block"}>
                 <p className="type-eyebrow mb-1 text-sm leading-loose text-muted sm:text-base">
                   {object.eyebrow}
                 </p>

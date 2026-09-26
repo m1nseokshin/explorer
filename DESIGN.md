@@ -56,7 +56,7 @@ components:
   scrim-edge: "linear-gradient(to bottom, rgba(0,0,0,0.55), transparent) at 96px on top and bottom edges"
   reticle: "44px ring, 1px accent-reticle at 50% alpha, unfilled, four 6px ticks at 0/90/180/270; expands to 64px at 90% alpha on snap"
   gesture-guide: "top-left glass panel, one row per gesture: 24px glyph ring, name, effect; inactive rows at 34% opacity, the recognised row at 100% with an accent ring"
-  hand-skeleton: "2D canvas overlay, 1.5px connection lines at 34% alpha, 2.2px joint dots at 55%, thumb-index pinch line in accent, palm ring on an active gesture"
+  hand-skeleton: "2D canvas overlay, 1.5px connection lines at 34% alpha, no joint dots; accent palm ring while dragging, accent thumb-index line while pinch-zooming, tightening ring that fills once a fist is armed"
   compass-strip: "top edge, 32px tall, scrim background, ticks every 15deg, cardinals in eyebrow tier"
   altitude-ladder: "right edge, ticks every 15deg from -30 to +90, ZENITH/HORIZON end labels in eyebrow tier"
   object-panel: "bottom sheet <640px (peek 120px, drag, snap 75dvh) / right drawer >=640px (max-w-md, full height)"
@@ -81,8 +81,8 @@ backdrop. It is this:
 > listening.**
 
 Buttons are self-documenting: they have edges, labels, and hover states. A hand waved at a
-camera has none of that. A user who does not know that an open palm zooms in will never
-discover it, and a user whose hand has drifted out of frame has no way to tell whether the
+camera has none of that. A user who does not know that spreading thumb and index zooms in
+will never discover it, and a user whose hand has drifted out of frame has no way to tell whether the
 system is broken or simply not seeing them. Every unusual decision below — the permanent
 gesture list, the skeleton overlay, the accent ring that lights on recognition — exists to
 answer one of those two questions.
@@ -247,27 +247,33 @@ to teach itself.
 
 ### The vocabulary
 
-Four gestures, and only four. Every additional gesture costs the user memory and costs the
+Three gestures, and only three. Every additional gesture costs the user memory and costs the
 recogniser accuracy, so the set stays small enough to hold in the head at a glance.
 
 | Gesture | Effect |
 |---|---|
-| Open palm, **still** | Zoom in |
-| Open palm, **sweeping** | Look around (pan) |
-| Fist | Zoom out |
-| Pinch (thumb to index) | Select whatever is in the reticle |
+| Open palm, **moving** | Drag the sky — it follows the hand; holding at the frame edge keeps it drifting |
+| Other three fingers folded, thumb and index **spread / narrowed** | Zoom in / out |
+| Fist, **then open** | Inspect whatever is in the reticle; do it again to close |
 
-Open-and-still versus open-and-sweeping are the same hand shape separated by **speed**. This
-is deliberate: the alternative is a fifth hand shape or an explicit mode toggle, and both are
-worse. Sweeping to look around and holding still to move closer are already how a person
-behaves in front of a window. The threshold carries hysteresis (0.35 to enter panning, 0.18
-to leave) so the two never flicker at the boundary.
+The shapes are told apart by the middle, ring and little fingers alone: all three open is a
+drag, all three folded with a live index is a pinch, everything folded is a fist. Thumb and
+index are the fingers that move *during* a pinch, so classifying on them would flip the mode
+every time the user spreads.
+
+Zoom is **relative**: the change in spread moves the zoom, not the spread itself, exactly like
+a touchscreen pinch. An absolute mapping jumps the instant a pinch begins, because nobody
+enters the pose at the same spread twice.
+
+Selecting is a **sequence**, not a pose. A fist alone fires nothing — people fold their hands
+all the time. A fist held for 0.12s *arms* the gesture, and opening the whole hand within
+0.9s fires it. The same motion opens and closes, so there is nothing second to learn.
 
 ### Three obligations, always on screen
 
 1. **The vocabulary is permanently visible.** The gesture list is not onboarding that
    disappears after the first run — it is the interface. Nothing else on screen tells the
-   user that a fist means anything at all. It lives in a glass panel at top-left because it
+   user that closing and opening the hand means anything at all. It lives in a glass panel at top-left because it
    is read-only display and the reachability rule reserves the top edge for exactly that.
 2. **Recognition is mirrored back.** The row matching the current gesture goes to full
    opacity with an accent ring; every other row sits at 34%. The user learns the mapping by
@@ -512,11 +518,13 @@ replaces its footer with the drag-and-scroll fallback note. This panel is not ch
 minimised — it is the only documentation the interface has.
 
 **`hand-skeleton`** — a 2D canvas overlay, never a DOM tree and never part of the 3D scene.
-Twenty-one joint dots at 55% alpha and 1.5px connection lines at 34%, both in `--on-primary`.
-A pinch draws an accent line between thumb and index tips whose opacity tracks how close they
-are, so the user can see the gesture arming before it fires. An active gesture adds a thin
-accent ring at the palm centre. The whole thing fades in and out over 0.18s so a dropped
-frame of tracking does not read as a flicker.
+1.5px connection lines at 34% in `--on-primary`, and no joint dots — 21 dots over a starfield
+are indistinguishable from stars. While dragging, a thin accent ring sits at the palm centre.
+While pinch-zooming, an accent line joins thumb and index tips; it stays faint for the brief
+engage delay so the user sees the pose registering before it acts. A fist draws a ring that
+tightens and fills with a dot once armed — "open now" read without looking at the hand. The
+whole thing fades in and out over 0.18s so a dropped frame of tracking does not read as a
+flicker.
 
 **`altitude-ladder`** — right edge, ticks every 15° from −30° to +90°, `ZENITH` and `HORIZON`
 in `.type-eyebrow` at the ends. Same scrim treatment.

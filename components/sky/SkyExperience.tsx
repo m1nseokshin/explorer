@@ -36,7 +36,7 @@ import CameraPreview from "./CameraPreview";
 import CompassStrip from "./CompassStrip";
 import ConstellationLabels from "./ConstellationLabels";
 import GestureGuide from "./GestureGuide";
-import HandControls, { type HandAction } from "./HandControls";
+import HandControls, { type HandAction, type HandFeedback } from "./HandControls";
 import HandOverlay from "./HandOverlay";
 import LocationPicker from "./LocationPicker";
 import ObjectPanel, { type SkyObject } from "./ObjectPanel";
@@ -79,7 +79,13 @@ const DEFAULT_LAYERS: SkyLayers = {
   bodies: true,
 };
 
-const IDLE_ACTION: HandAction = { kind: "idle", panning: false, zoom: 1 };
+const IDLE_ACTION: HandAction = {
+  kind: "idle",
+  panning: false,
+  zooming: false,
+  armed: false,
+  zoom: 1,
+};
 
 export default function SkyExperience({ timelapse = false }: { timelapse?: boolean }) {
   const { lang } = useLanguage();
@@ -118,7 +124,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
   const [snapped, setSnapped] = useState<string | null>(null);
   // 조준선이 들어와 있는 별자리. 선택(activeConstellation)과 다른 층이다 —
-  // 이건 손을 움직이면 저절로 바뀌고, 선택은 핀치해야 바뀐다.
+  // 이건 하늘을 움직이면 저절로 바뀌고, 선택은 쥐었다 펴야(또는 눌러야) 바뀐다.
   const [aimed, setAimed] = useState<{
     id: string;
     name: string;
@@ -136,7 +142,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
   const [aimedLabel, setAimedLabel] = useState<string | null>(null);
   /**
    * 지금 입력 방식으로 '연다'는 동작의 이름.
-   * 손을 쓰면 핀치, 손가락이면 터치, 마우스면 클릭이다 — 화면이 알려주는
+   * 손을 쓰면 쥐었다 펴기, 손가락이면 터치, 마우스면 클릭이다 — 화면이 알려주는
    * 방법과 실제로 해야 하는 동작이 어긋나면 안내가 아니라 방해가 된다.
    */
   const [coarsePointer, setCoarsePointer] = useState(true);
@@ -146,11 +152,21 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
   const rootRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const viewCmdRef = useRef<ViewCommand | null>(null);
+  /** 손 조작 쪽의 같은 핸들. 지금 살아 있는 쪽을 activeCmd()로 고른다. */
+  const handCmdRef = useRef<ViewCommand | null>(null);
+  const handFeedbackRef = useRef<HandFeedback>({ panning: false, zooming: false, armed: false });
   /** SkyRig 추종 시정수. 드래그는 즉각, 자동 이동은 느리게 — VirtualControls가 바꾼다. */
   const followTauRef = useRef(0.045);
   /** 별자리를 열기 직전의 시야. 닫으면 여기로 돌아온다. */
   const viewBeforeRef = useRef<{ az: number; alt: number; zoom: number } | null>(null);
-  const quatRef = useRef(new THREE.Quaternion());
+  // 첫 시선: 북쪽, 고도 20°. 조작 레이어들은 켜질 때 이 자세를 이어받으므로
+  // 여기가 유일한 초기값이다 — 항등(고도 0°)으로 두면 수평선에 코를 박고 시작한다.
+  const [initialQuat] = useState(() =>
+    new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(THREE.MathUtils.degToRad(20), 0, 0, "YXZ"),
+    ),
+  );
+  const quatRef = useRef(initialQuat);
   // 초기 FOV도 가정 화각에서 유도한다. 상수로 시작하면 조작이 붙는 순간 화각이 튄다.
   const [initialFov] = useState(() =>
     typeof window === "undefined"
@@ -168,6 +184,20 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
   // 파생 상태. 이펙트로 동기화하면 한 프레임 늦고, 손 인식이 중간에 죽었을 때
   // '켜져 있다고 표시되지만 아무것도 안 되는' 상태가 생긴다.
   const handOn = handWanted && hand.status === "running";
+  const handOnRef = useRef(handOn);
+  useEffect(() => {
+    handOnRef.current = handOn;
+  }, [handOn]);
+
+  /**
+   * 시야를 옮기는 명령은 지금 조작을 쥐고 있는 쪽으로 보낸다.
+   * ⚠️ 드래그 쪽(VirtualControls)은 손 인식 중에 꺼져 있어서, 거기로 보내면
+   *    손으로 별자리를 열어도 시야가 그쪽으로 안 간다 — 조용히 아무 일도 없다.
+   */
+  const activeCmd = useCallback(
+    () => (handOnRef.current ? handCmdRef.current : viewCmdRef.current),
+    [],
+  );
 
   // ── 데이터 로드 ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -260,7 +290,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
   }, []);
 
   const openHint = useMemo(() => {
-    if (handOn) return t("핀치해서 자세히 보기", "Pinch to open");
+    if (handOn) return t("주먹 쥐었다 펴서 자세히 보기", "Close and open your hand to inspect");
     if (coarsePointer) return t("터치해서 자세히 보기", "Tap to open");
     return t("클릭해서 자세히 보기", "Click to open");
   }, [handOn, coarsePointer, t]);
@@ -387,7 +417,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
    */
   const frameConstellation = useCallback(
     (id: string) => {
-      const cmd = viewCmdRef.current;
+      const cmd = activeCmd();
       const c = constellations.find((x) => x.id === id);
       if (!cmd || !c) return;
 
@@ -409,17 +439,29 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
       // 놓으면 돌아온다 — 닫기(✕)를 눌러야 풀린다.
       cmd.lock({ az, alt });
     },
-    [constellations],
+    [constellations, activeCmd],
   );
 
   const restoreView = useCallback(() => {
-    const cmd = viewCmdRef.current;
+    const cmd = activeCmd();
     const before = viewBeforeRef.current;
     viewBeforeRef.current = null;
     if (!cmd) return;
     cmd.unlock();
     if (before) cmd.set(before);
-  }, []);
+  }, [activeCmd]);
+
+  const closeSelection = useCallback(() => {
+    setSelected(null);
+    setSelectedStar(null);
+    setActiveConstellation(null);
+    restoreView();
+  }, [restoreView]);
+
+  const selectedRef = useRef<SkyObject | null>(null);
+  useEffect(() => {
+    selectedRef.current = selected;
+  }, [selected]);
 
   const constellationToObject = useCallback(
     (id: string): SkyObject | null => {
@@ -553,6 +595,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
     },
     [
       catalog,
+      closeSelection,
       starToObject,
       starMeta,
       constellationToObject,
@@ -560,6 +603,17 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
       restoreView,
     ],
   );
+
+  /**
+   * 주먹 쥐었다 펴기. 같은 손짓이 열기와 닫기를 겸한다 — 동작을 두 개 외우게
+   * 하는 것보다, '한 번 더 하면 되돌아간다'가 배울 게 없다.
+   * 여는 자리는 손이 아니라 조준선(화면 중앙)이다. 손은 공중에 있어서 정밀하게
+   * 가리킬 수 없고, 하늘을 조준선으로 끌어오는 쪽이 정확하다.
+   */
+  const handleGrasp = useCallback(() => {
+    if (selectedRef.current) closeSelection();
+    else selectAt(0, 0);
+  }, [closeSelection, selectAt]);
 
   // ── 조준선 (150ms) ──────────────────────────────────────────────────
   // 별 스냅과 별자리 조준을 한 루프에서 본다. 둘 다 '화면 중앙에 뭐가 있나'라는
@@ -677,8 +731,8 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
         eyebrow={t("천측 항법 · 손으로 항해", "Celestial navigation · Sailed by hand")}
         title={t("손으로 하늘을 항해합니다", "You sail the sky by hand")}
         body={t(
-          "손바닥을 펴고 좌우로 저으면 하늘이 그쪽으로 돌아갑니다. 그 손을 카메라 쪽으로 밀면 다가가고, 뒤로 당기면 물러납니다. 주먹을 쥐면 처음 배율로 돌아오고, 엄지와 검지를 붙이면 조준선 안의 별이 열립니다.",
-          "Sweep an open palm and the sky turns with it. Push that hand toward the camera to close in, pull it back to retreat. Make a fist to return to the start, pinch to open whatever sits in the crosshair.",
+          "손바닥을 펴고 움직이면 하늘이 손을 따라옵니다 — 화면 끝에 대고 있으면 그쪽으로 계속 흐릅니다. 나머지 손가락을 접고 엄지와 검지를 벌리면 확대, 좁히면 축소됩니다. 조준선에 별을 맞추고 주먹을 쥐었다 펴면 설명이 열리고, 한 번 더 하면 닫힙니다.",
+          "Open your palm and move it — the sky follows your hand, and keeps drifting while you hold it at the frame edge. Fold the other fingers and spread thumb and index to zoom in, narrow them to zoom out. Put a star in the reticle and close then open your hand to read about it; do it again to close.",
         )}
         rationale={t(
           "카메라는 손을 읽는 데만 씁니다. 영상은 화면에 띄우지 않고, 기기 밖으로 나가지 않습니다.",
@@ -755,7 +809,9 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
         멈춰 인식이 통째로 죽는다 — 그래서 1px 투명으로 숨긴다.
       */}
       <video
-        ref={hand.videoRef}
+        // ⚠️ 콜백 ref다. 이 요소는 하늘 화면에서만 마운트되므로, 붙는 순간
+        //    스트림을 연결해야 한다 (useHandTracking의 attachVideo 참조).
+        ref={hand.attachVideo}
         playsInline
         muted
         autoPlay
@@ -805,8 +861,11 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
         quatRef={quatRef}
         fovRef={fovRef}
         zoomRef={zoomRef}
+        followTauRef={followTauRef}
+        commandRef={handCmdRef}
+        feedbackRef={handFeedbackRef}
         enabled={handOn}
-        onPinch={selectAt}
+        onGrasp={handleGrasp}
         onAction={setAction}
       />
 
@@ -827,6 +886,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
       <HandOverlay
         landmarksRef={hand.landmarksRef}
         handRef={hand.handRef}
+        feedbackRef={handFeedbackRef}
         active={handOn}
         nightMode={nightMode}
       />
@@ -854,7 +914,11 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
       <AltitudeLadder readoutRef={readoutRef} />
 
       {/* 실제 상태를 그대로 넘긴다 — 실패를 '꺼짐'으로 뭉개면 원인이 안 보인다. */}
-      <GestureGuide action={action} handStatus={handWanted ? hand.status : "idle"} />
+      <GestureGuide
+        action={action}
+        handStatus={handWanted ? hand.status : "idle"}
+        hasSelection={!!selected}
+      />
 
       {/* 손 인식을 켰을 때만. 영상이 나오는지 / 선이 얹히는지로
           카메라 문제와 인식 문제를 가른다. */}
@@ -910,9 +974,10 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
         onRecenter={() => {
           // ⚠️ quatRef만 바꾸면 안 된다. 방위·고도의 진짜 상태는 VirtualControls
           //    안에 있어서, 다음 드래그에 옛 값으로 되돌아가 화면이 튄다.
-          viewCmdRef.current?.unlock();
+          const cmd = activeCmd();
+          cmd?.unlock();
           viewBeforeRef.current = null;
-          viewCmdRef.current?.set({ az: 0, alt: 20, zoom: 1 }, RECENTER_TAU);
+          cmd?.set({ az: 0, alt: 20, zoom: 1 }, RECENTER_TAU);
         }}
         extraPanel={
           timelapse ? (
@@ -929,12 +994,9 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
 
       <ObjectPanel
         object={selected}
-        onClose={() => {
-          setSelected(null);
-          setSelectedStar(null);
-          setActiveConstellation(null);
-          restoreView();
-        }}
+        onClose={closeSelection}
+        // 손으로는 스크롤할 수 없다. 읽는 속도로 설명을 조금씩 올려 준다.
+        autoScroll={handOn}
       />
 
       <LocationPicker

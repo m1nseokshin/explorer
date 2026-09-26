@@ -3,13 +3,14 @@
 import { useEffect, useImperativeHandle, useRef } from "react";
 import * as THREE from "three";
 import { DEFAULT_H_FOV_DEG } from "@/lib/orientation";
+import { worldToAltAz } from "@/lib/sky";
 
 /** 고정 중 손가락을 따라가는 비율. 낮을수록 '무겁게' 끌린다. */
-const LOCK_DRAG_GAIN = 0.3;
+export const LOCK_DRAG_GAIN = 0.3;
 /** 고정 지점에서 벗어날 수 있는 최대 각도(도). 아무리 끌어도 여기서 멈춘다. */
-const LOCK_MAX_PULL = 7;
+export const LOCK_MAX_PULL = 7;
 /** 자동으로 시야를 옮길 때의 추종 시정수(초). 눈이 따라갈 만큼 느려야 한다. */
-const EASE_TAU = 0.55;
+export const EASE_TAU = 0.55;
 /**
  * '북쪽 보기'의 시정수(초).
  * 하늘을 반 바퀴 돌릴 수도 있는 동작이라, 일반 자동 이동보다 더 느긋해야
@@ -17,9 +18,21 @@ const EASE_TAU = 0.55;
  */
 export const RECENTER_TAU = 1.1;
 /** 고무줄이 되돌아올 때. 놓자마자 튀어 돌아오면 '끊어진' 느낌이 든다. */
-const SPRING_TAU = 0.3;
+export const SPRING_TAU = 0.3;
 /** 손가락을 따라갈 때. 지연이 느껴지면 안 된다. */
-const DRAG_TAU = 0.045;
+export const DRAG_TAU = 0.045;
+
+const _fwd = new THREE.Vector3();
+
+/**
+ * 지금 자세의 방위·고도(도).
+ *
+ * ⚠️ 조작 레이어(손 ↔ 드래그)를 바꿀 때 이걸로 이어받아야 한다. 각자 들고 있던
+ *    옛 방위·고도로 시작하면 모드를 바꾸는 순간 하늘이 엉뚱한 곳으로 튄다.
+ */
+export function readAzAlt(q: THREE.Quaternion): { az: number; alt: number } {
+  return worldToAltAz(_fwd.set(0, 0, -1).applyQuaternion(q));
+}
 
 export interface ViewCommand {
   /** 현재 시야(방위·고도·배율). 되돌아올 자리를 기억할 때 쓴다. */
@@ -99,6 +112,11 @@ export default function VirtualControls({
     let downAt = 0;
     let downPos = { x: 0, y: 0 };
     let moved = 0;
+
+    // 손 조작이 옮겨 둔 자리에서 이어간다
+    const cur = readAzAlt(quatRef.current);
+    azRef.current = cur.az;
+    altRef.current = cur.alt;
 
     const apply = () => {
       altRef.current = THREE.MathUtils.clamp(altRef.current, -89, 89);

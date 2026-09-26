@@ -1,7 +1,11 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
 <!-- END:nextjs-agent-rules -->
 
 # EXPLORER — 프로젝트 규칙
@@ -17,10 +21,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 바꾸면 반드시 `npm run verify`
 
-314개 검사를 브라우저도 카메라도 없이 돈다. 아래 중 하나라도 건드렸으면 통과시킬 것.
+342개 검사를 브라우저도 카메라도 없이 돈다. 아래 중 하나라도 건드렸으면 통과시킬 것.
 
-- `lib/sky.ts`, `scripts/build-star-data.mjs`, `public/data/*` → 천문 290개
-- `lib/gestures.ts`의 임계값이나 지표 → 제스처 24개
+- `lib/sky.ts`, `scripts/build-star-data.mjs`, `public/data/*` → 천문 302개
+- `lib/gestures.ts`의 임계값이나 지표, 쥐었다 펴기 타이밍 → 제스처 40개
   (`CURVE=1`을 붙이면 curl→openness 곡선을 직접 볼 수 있다)
 
 ## 조용히 틀리기 쉬운 지점
@@ -37,8 +41,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
    적용한 뒤 `useFrame`으로 갱신한다.
 5. **손 척도는 손목→중지 MCP** — 손가락 길이를 척도로 쓰면 주먹을 쥘 때 척도가
    같이 줄어 판정이 무너진다. `handScale()`을 우회하지 말 것.
-6. **핀치 판정이 openness보다 우선** — 순서를 뒤집으면 핀치 중에 접힌 검지·엄지 때문에
-   '펼침'으로 오독된다.
+6. **손 모양은 중지·약지·새끼로 가른다** — 엄지·검지는 핀치 중에 움직이는 손가락이라
+   판정에 쓰면 벌릴 때마다 펼침↔핀치가 바뀐다. 핀치의 검지 하한(`PINCH_INDEX_MIN`)을
+   주먹 문턱에 붙이지 말 것 — 반쯤 접은 손(다섯 손가락 모두 0.26)이 핀치로 새서
+   주먹을 풀 때마다 배율이 흔들린다.
 7. **인식용 `<video>`를 `display:none`으로 숨기지 말 것** — 일부 브라우저가 디코딩을
    멈춰 손 인식이 통째로 죽는다. 1px 투명으로 숨긴다.
 8. **손 조작 위에 또 슬러핑하지 말 것** — `HandControls`가 이미 속도 저역통과를
@@ -157,14 +163,52 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 제스처 규약
 
+손 모양은 세 가지이고, 각각 한 가지 일만 한다.
+
+| 손 모양 | 하는 일 |
+|---|---|
+| 손바닥 펴고 움직이기 (`open`) | 하늘 끌기. 카메라 화면 좌우 끝에 대고 있으면 계속 흐른다 |
+| 엄지·검지 벌리기/좁히기 (`pinch`, 나머지 셋은 접는다) | 확대 / 축소 |
+| 주먹 쥐었다 펴기 (`fist` → `open`) | 조준선 자리 자세히 보기. 열려 있으면 닫기 |
+
 **확대와 축소를 서로 다른 손 모양에 배정하지 말 것.** 어느 쪽이 어느 쪽인지
 외워야 하고, 둘 사이를 오가려면 자세를 바꿔야 해서 미세 조정이 불가능해진다.
-하나의 축(카메라와의 거리)에 양방향으로 얹는다 — 밀면 다가가고 당기면 물러난다.
-되돌리는 것도 같은 축이라 배울 게 없다.
+하나의 축(엄지-검지 벌림)에 양방향으로 얹는다 — 벌리면 확대, 좁히면 축소.
 
-깊이 줌은 **속도 매핑**이지 절대 매핑이 아니다. 손 크기를 배율에 직접 물리면
-팔 길이가 곧 배율 범위의 상한이 된다. 기준점(`neutralRef`)은 손이 사라지거나
-저을 때마다 지금 위치로 다시 잡는다 — 안 그러면 손을 다시 들 때 배율이 튄다.
+**확대는 손의 겉보기 크기로 재지 말 것.** 손을 기울이면 손목→중지 거리가 단축돼
+거리는 그대로인데 '멀어졌다'로 읽히고, 미는 동작에는 기울임이 늘 섞인다.
+**엄지-검지 벌림**은 손 크기로 나눈 비율이라 카메라 거리에 불변이다(검증으로 잠금).
+
+**핀치는 상대 매핑이다.** 벌린 간격이 아니라 **변화량**이 배율을 바꾼다
+(`zoomStep`). 절대 매핑으로 되돌리면 핀치 자세로 들어오는 순간의 간격이 제각각이라
+배율이 튀고, 손을 편 채 간격을 읽으면 곧장 최대 배율이 된다. 감도는
+`PINCH_SENSITIVITY = 0.8` — 예전 절대 매핑(벌림 0.3→1.25에 ×1→×8)의 0.8배
+속도다. 핀치로 판정돼도 `PINCH_ENGAGE_S`만큼 유지돼야 배율이 움직인다. 주먹을
+풀 때 검지가 먼저 펴지면 몇 프레임이 핀치와 똑같아서다.
+
+**끌기는 손을 따라온다.** 방향은 마우스 드래그와 같다 — 손을 오른쪽으로 옮기면 별도
+오른쪽으로 온다. 스켈레톤과 별이 함께 움직여야 '쥐고 있다'로 읽힌다. 팔 길이로는
+한 바퀴를 못 도니 카메라 화면 좌우 끝(`EDGE_ZONE`)에 대고 있으면 끌던 방향으로
+계속 흐른다. 되돌리는 손짓이 반대로 끌리는 문제는 이 끝 구간이 대신 푼다.
+
+**선택은 한 프레임이 아니라 순서로 판정한다.** 주먹 하나로 발화하면 손을
+접었다 펴는 평범한 동작마다 창이 열리고 닫힌다. `stepGrasp`는 주먹을
+`GRASP_HOLD_S` 이상 쥐고, 푼 뒤 `GRASP_WINDOW_S` 안에 **다 펴야** 발화한다. 그 사이의
+중간 프레임(none·pinch)과 한두 프레임의 인식 끊김은 무장을 풀지 않는다 — 손을 빠르게
+펴면 그 구간이 늘 흐리다. 같은 손짓이 열기와 닫기를 겸한다. 동작을 둘 외우게 하는 것보다
+'한 번 더 하면 되돌아간다'가 배울 게 없다. 여는 자리는 손끝이 아니라 **조준선**이다.
+
+**핀치 직후의 주먹은 세지 않는다**(`PINCH_RECENT_S`). 끝까지 좁혀 축소하다 보면 손이
+주먹처럼 읽히는 순간이 있고, 그게 무장되면 이어서 손을 펼 때 창이 열린다.
+
+**손으로 여는 창은 저절로 내려간다.** 손으로는 스크롤할 수 없어서 첫 화면 아래의
+설명을 영영 못 읽는다. `ObjectPanel`의 `autoScroll`이 2.5초 뒤 14px/s로 올려 주고,
+사용자가 직접 스크롤하면 4초 멈춘다.
+
+**시야 명령은 살아 있는 쪽으로 보낸다.** 드래그(`VirtualControls`)와 손
+(`HandControls`)은 각자 방위·고도를 들고 있다. 별자리 프레이밍·북쪽 보기는
+`activeCmd()`로 지금 조작 중인 쪽에 보내고, 모드가 바뀌면 `readAzAlt()`로 지금 자세를
+이어받는다. 드래그 쪽으로만 보내면 손 모드에서 별자리를 열어도 시야가 안 움직인다.
 
 ## 모션 규약
 
