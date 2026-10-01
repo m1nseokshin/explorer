@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   // "EXPLORER — …"가 반복되면 앞부분이 다 잘려 구분이 안 된다.
   title: "Explorer",
   description:
-    "수천 년 동안 뱃사람은 별로 자기 위치를 알았습니다. 그 오래된 도구를 지금 당신이 선 자리의 하늘로 되돌려 놓았습니다. 항해는 손으로 합니다.",
+    "수천 년 동안 뱃사람은 별로 자기 위치를 알아냈습니다. 그 오래된 도구를 지금 서 있는 자리의 하늘에 맞춰 다시 만들었습니다. 항해는 손으로 합니다.",
 };
 
 export const viewport: Viewport = {

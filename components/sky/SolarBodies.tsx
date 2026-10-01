@@ -10,6 +10,8 @@ interface Props {
   timeRef: React.RefObject<number>;
   lat: number;
   lon: number;
+  /** 재계산 주기(초). 실시간은 1초면 충분하고, 타임랩스는 더 자주 풀어야 한다. */
+  intervalS?: number;
 }
 
 /** 원형 스프라이트 텍스처를 코드로 만든다 (외부 에셋 없음). */
@@ -39,7 +41,7 @@ function discTexture(soft: boolean): THREE.Texture {
  * 해·달·행성. 별과 같은 EQJ 그룹 안에 놓이므로 하늘 변환을 그대로 공유한다.
  * 달은 0.5°/시간으로 움직이므로 1Hz 재계산이면 충분하다.
  */
-export default function SolarBodies({ timeRef, lat, lon }: Props) {
+export default function SolarBodies({ timeRef, lat, lon, intervalS = 1 }: Props) {
   const [bodies, setBodies] = useState<SolarBody[]>([]);
   const acc = useRef(0);
   const lastKey = useRef("");
@@ -50,7 +52,7 @@ export default function SolarBodies({ timeRef, lat, lon }: Props) {
   useFrame((_, delta) => {
     acc.current += delta;
     const key = `${lat.toFixed(3)},${lon.toFixed(3)}`;
-    if (acc.current < 1 && key === lastKey.current) return;
+    if (acc.current < intervalS && key === lastKey.current) return;
     acc.current = 0;
     lastKey.current = key;
     const next = computeSolarBodies(new Date(timeRef.current || Date.now()), lat, lon);

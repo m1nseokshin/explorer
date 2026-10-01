@@ -44,7 +44,6 @@ import PermissionCard from "./PermissionCard";
 import Reticle from "./Reticle";
 import SkyCanvas, { type SkyLayers } from "./SkyCanvas";
 import SkyHud from "./SkyHud";
-import TimeControls from "./TimeControls";
 import VirtualControls, { RECENTER_TAU, type ViewCommand } from "./VirtualControls";
 
 type Stage = "loading" | "location" | "intro" | "hand-failed" | "sky";
@@ -87,7 +86,7 @@ const IDLE_ACTION: HandAction = {
   zoom: 1,
 };
 
-export default function SkyExperience({ timelapse = false }: { timelapse?: boolean }) {
+export default function SkyExperience() {
   const { lang } = useLanguage();
   const t = useCallback(
     (ko: string, en: string) => (lang === "ko" ? ko : en),
@@ -276,10 +275,12 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
 
   // /explore는 실시간 하늘이다. 이전 세션에서 시간을 돌려 둔 상태로 들어와
   // '하늘이 이상하다'가 되는 걸 막으려면 들어올 때 실시간으로 되돌려야 한다.
+  // 타임랩스는 따로 시계를 들고 있어 여기엔 영향을 주지 않지만, 예전 세션이
+  // 남긴 배속이 있을 수 있으므로 들어올 때마다 비운다.
   const resetTime = observer.resetTime;
   useEffect(() => {
-    if (!timelapse) resetTime();
-  }, [timelapse, resetTime]);
+    resetTime();
+  }, [resetTime]);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse)");
@@ -393,7 +394,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
                 {
                   labelKo: "천측 항법 별",
                   labelEn: "Navigational star",
-                  value: t("항해력 57성", "In the almanac 57"),
+                  value: t("항해력 57성", "One of the Almanac's 57"),
                 },
               ]
             : []),
@@ -731,11 +732,11 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
         eyebrow={t("천측 항법 · 손으로 항해", "Celestial navigation · Sailed by hand")}
         title={t("손으로 하늘을 항해합니다", "You sail the sky by hand")}
         body={t(
-          "손바닥을 펴고 움직이면 하늘이 손을 따라옵니다 — 화면 끝에 대고 있으면 그쪽으로 계속 흐릅니다. 나머지 손가락을 접고 엄지와 검지를 벌리면 확대, 좁히면 축소됩니다. 조준선에 별을 맞추고 주먹을 쥐었다 펴면 설명이 열리고, 한 번 더 하면 닫힙니다.",
-          "Open your palm and move it — the sky follows your hand, and keeps drifting while you hold it at the frame edge. Fold the other fingers and spread thumb and index to zoom in, narrow them to zoom out. Put a star in the reticle and close then open your hand to read about it; do it again to close.",
+          "손바닥을 펴고 움직이면 하늘이 손을 따라옵니다. 화면 끝에 대고 있으면 그쪽으로 계속 흐릅니다. 나머지 손가락을 접고 엄지와 검지를 벌리면 확대, 좁히면 축소됩니다. 조준선에 별을 맞추고 주먹을 쥐었다 펴면 설명이 열리고 한 번 더 하면 닫힙니다.",
+          "Open your palm and move it, and the sky follows your hand; hold it at the edge of the frame and it keeps drifting. Fold the other fingers and spread thumb and index to zoom in, narrow them to zoom out. Put a star in the reticle and close then open your hand to read about it; do it again to close.",
         )}
         rationale={t(
-          "카메라는 손을 읽는 데만 씁니다. 영상은 화면에 띄우지 않고, 기기 밖으로 나가지 않습니다.",
+          "카메라는 손을 읽는 데만 씁니다. 영상은 화면에 띄우지 않고 기기 밖으로 보내지도 않습니다.",
           "The camera is used only to read your hand. The video is never shown and never leaves your device.",
         )}
         ctaLabel={
@@ -766,7 +767,7 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
     const body =
       s === "insecure"
         ? t(
-            "브라우저는 보안 연결에서만 카메라를 엽니다. localhost이거나 https로 접속하면 손 인식이 켜집니다.",
+            "브라우저는 보안 연결에서만 카메라를 엽니다. localhost나 https로 접속하면 손 인식이 켜집니다.",
             "Browsers only open the camera over a secure connection. Load this page on localhost or over https.",
           )
         : s === "busy"
@@ -979,17 +980,6 @@ export default function SkyExperience({ timelapse = false }: { timelapse?: boole
           viewBeforeRef.current = null;
           cmd?.set({ az: 0, alt: 20, zoom: 1 }, RECENTER_TAU);
         }}
-        extraPanel={
-          timelapse ? (
-            <TimeControls
-              timeRef={observer.simTimeRef}
-              timeScale={observer.timeScale}
-              onScale={observer.setTimeScale}
-              onReset={observer.resetTime}
-              open
-            />
-          ) : null
-        }
       />
 
       <ObjectPanel

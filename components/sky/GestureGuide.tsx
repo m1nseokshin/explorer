@@ -55,8 +55,8 @@ export default function GestureGuide({ action, handStatus, hasSelection = false 
       case "running":
         return action.kind === "idle"
           ? t(
-              "손을 못 찾고 있습니다. 카메라 앞에 손바닥을 펴 보세요 — 잡히면 뼈대가 그려집니다.",
-              "No hand yet. Hold an open palm up to the camera — a skeleton appears once it locks on.",
+              "아직 손이 보이지 않습니다. 카메라 앞에 손바닥을 펴 보세요. 손이 잡히면 뼈대가 그려집니다.",
+              "No hand yet. Hold an open palm up to the camera; a skeleton appears once it locks on.",
             )
           : null;
       case "pending":
@@ -88,8 +88,8 @@ export default function GestureGuide({ action, handStatus, hasSelection = false 
         );
       default:
         return t(
-          "손 인식이 꺼져 있습니다. 드래그와 휠로 둘러볼 수 있어요.",
-          "Hand tracking is off — drag and scroll instead.",
+          "손 인식이 꺼져 있습니다. 드래그와 휠로 둘러볼 수 있습니다.",
+          "Hand tracking is off. Drag and scroll instead.",
         );
     }
   })();

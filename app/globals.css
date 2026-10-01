@@ -303,3 +303,95 @@ body {
   min-height: 56px;
 }
 
+/* ---- 소개 페이지 성도(ConstellationAtlas): 88칸 ----
+   칸 상태는 인라인 변수로 받고(--drawn·--lo·--so), 호버는 --hv 하나로 덮는다.
+   호버를 React state로 하면 칸을 지날 때마다 SVG 2천 개가 다시 그려진다.
+   --cd(칸 지연)는 호버 중에는 0이 된다 — 시대가 바뀔 때만 물결처럼 번지고,
+   손가락이 닿은 칸은 곧바로 그려져야 한다. */
+.atlas-cell {
+  --hv: 0;
+}
+
+.atlas-cell:hover,
+.atlas-cell:focus-visible {
+  --hv: 1;
+}
+
+.atlas-cell:focus-visible {
+  outline: 1px solid var(--on-primary);
+  outline-offset: -1px;
+}
+
+/* 호버로 그리는 획(--hv=1)은 짧게, 시대가 바뀌며 번지는 획은 길게 — 손이 닿은
+   칸이 늦게 그려지면 반응이 없는 것처럼 읽힌다. */
+.atlas-cell line {
+  stroke-dasharray: var(--len) var(--len);
+  stroke-dashoffset: calc(var(--len) * (1 - max(var(--drawn), var(--hv))));
+  stroke-opacity: max(var(--lo), var(--hv));
+  transition:
+    stroke-dashoffset calc(1.8s - 1s * var(--hv)) cubic-bezier(0.22, 1, 0.36, 1),
+    stroke-opacity 0.9s ease;
+  transition-delay: calc((var(--cd) + var(--ld, 0ms)) * (1 - var(--hv))), 0s;
+}
+
+.atlas-cell circle {
+  opacity: max(var(--so), var(--hv));
+  transition: opacity 1.1s ease;
+  transition-delay: calc(var(--cd) * (1 - var(--hv)));
+}
+
+/* ---- 타임랩스 속도 슬라이더 (DESIGN.md Inputs: 2px 트랙, 20px 흰 손잡이, 44px 터치 높이) ---- */
+.tl-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tl-range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--hairline-on-dark);
+  border-radius: 1px;
+}
+
+.tl-range::-moz-range-track {
+  height: 2px;
+  background: var(--hairline-on-dark);
+  border-radius: 1px;
+}
+
+.tl-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -9px;
+  border-radius: 9999px;
+  background: var(--on-primary);
+  border: 0;
+}
+
+.tl-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--on-primary);
+  border: 0;
+}
+
+.tl-range:focus-visible {
+  outline: none;
+}
+
+.tl-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-cell line,
+  .atlas-cell circle {
+    transition: none;
+  }
+}
+

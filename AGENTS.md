@@ -21,9 +21,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## 바꾸면 반드시 `npm run verify`
 
-342개 검사를 브라우저도 카메라도 없이 돈다. 아래 중 하나라도 건드렸으면 통과시킬 것.
+359개 검사를 브라우저도 카메라도 없이 돈다. 아래 중 하나라도 건드렸으면 통과시킬 것.
 
-- `lib/sky.ts`, `scripts/build-star-data.mjs`, `public/data/*` → 천문 302개
+- `lib/sky.ts`, `scripts/build-star-data.mjs`, `public/data/*` → 천문 319개
+- `lib/constellationOrigins.ts`, `lib/skyProjection.ts` → 위에 포함(H13 · H14)
 - `lib/gestures.ts`의 임계값이나 지표, 쥐었다 펴기 타이밍 → 제스처 40개
   (`CURVE=1`을 붙이면 curl→openness 곡선을 직접 볼 수 있다)
 
@@ -125,6 +126,15 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
     틀린다. 하한 배율도 종횡비가 정한다 — 정사각이면 2(위도 전체 + 경도 180°).
 30. **저장된 설정은 지연 초기화로 읽을 것** — 이펙트에서 복원하면 값을 저장하는
     이펙트가 먼저 돌면서 기본값으로 덮어써 설정이 조용히 유실된다.
+31. **스크롤에 묶인 `useTransform`은 0..1 전체를 덮을 것** — Motion이 opacity를
+    브라우저 ScrollTimeline으로 넘기면서, 키프레임이 덮지 않은 끝 구간을 요소의
+    '원래 값'(opacity 1)으로 채운다. 소개 필름의 첫 자막이 0.15에서 꺼진 뒤 스크롤을
+    내릴수록 도로 떠올라 마지막 장면 자막과 겹쳤다. `[0, a, b, 1]`처럼 양 끝을 적는다.
+    같은 요소에 CSS 애니메이션(`.scroll-hint`)이 걸려 있으면 그쪽이 인라인 opacity를
+    덮어쓰므로 감싸는 요소를 따로 둔다.
+32. **소개 페이지는 `lib/sky.ts`를 import하지 말 것** — three.js가 통째로 딸려 온다.
+    필름은 `lib/skyProjection.ts`(평사도법, three 없음)를 쓴다. 동쪽이 왼쪽이고, 극을
+    가운데 둔 채 적경을 늘리면 반시계로 돈다 — `verify-sky.mjs` H14가 실제 하늘과 대조한다.
 
 ## 데이터 정확성 규약
 

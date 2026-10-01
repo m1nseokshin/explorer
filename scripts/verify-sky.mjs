@@ -572,6 +572,134 @@ console.log("H12. 별 선택 허용 오차");
   check("  허용 배수는 3", STAR_HIT_TOLERANCE === 3);
 }
 
+// ─── H13. 별자리의 출처 시대 ─────────────────────────────────────────
+// 소개 페이지 성도는 시대마다 불을 켠다. 한 별자리가 어느 무리에도 없으면 그 칸은
+// 영영 어둡고, 두 무리에 있으면 두 번 켜진다. 88칸 중 하나는 눈으로 안 잡힌다.
+console.log("H13. 별자리 출처 시대");
+{
+  const { ERAS, eraOf, ARGO_PIECES } = await import("../lib/constellationOrigins.ts");
+  const all = ERAS.flatMap((e) => e.members);
+  const ids = new Set(cons.map((c) => c.id));
+  check("  네 무리의 합이 88", all.length === 88, `${all.length}개`);
+  check("  한 별자리가 두 무리에 들지 않음", new Set(all).size === all.length);
+  const unknown = all.filter((id) => !ids.has(id));
+  check("  목록의 약어가 모두 데이터에 있음", unknown.length === 0, unknown.join(", "));
+  const orphan = [...ids].filter((id) => !eraOf(id));
+  check("  데이터의 별자리가 모두 시대를 가짐", orphan.length === 0, orphan.join(", "));
+  const size = Object.fromEntries(ERAS.map((e) => [e.id, e.members.length]));
+  // 프톨레마이오스 48 = 살아남은 47 + 셋으로 나뉜 아르고
+  check("  프톨레마이오스 47 + 아르고 조각 3", size.ptolemy === 50, `${size.ptolemy}`);
+  check("  아르고 조각은 고대 무리", ARGO_PIECES.every((id) => eraOf(id) === "ptolemy"));
+  check("  케이서·더 하우트만 12 + 플란시우스 3 + 남십자·머리털", size.voyage === 17, `${size.voyage}`);
+  check("  헤벨리우스 7", size.hevelius === 7, `${size.hevelius}`);
+  check("  라카유 14", size.lacaille === 14, `${size.lacaille}`);
+}
+
+// ─── H14. 소개 필름의 2D 투영 ────────────────────────────────────────
+// 평사도법을 손으로 짰다. 좌우가 뒤집히거나 일주운동이 거꾸로 돌아도 화면은
+// 그럴듯해 보인다 — 실제 하늘(astronomy-engine)과 방향을 맞대 본다.
+console.log("H14. 소개 필름 투영");
+{
+  const { viewBasis, viewScale, project, radecToUnit } = await import("../lib/skyProjection.ts");
+  const meta = JSON.parse(fs.readFileSync(path.join(DATA, "stars.meta.json"), "utf8"));
+  const idxOf = (name, con) =>
+    Number(Object.entries(meta).find(([, m]) => m.name === name && m.con === con)?.[0] ?? -1);
+  const vec = (i) => [sxyz[i * 3], sxyz[i * 3 + 1], sxyz[i * 3 + 2]];
+  const B = {};
+  const at = (v, scale = 400) => {
+    const o = { x: 0, y: 0 };
+    return project(B, scale, 0, 0, v[0], v[1], v[2], o) ? o : null;
+  };
+
+  // 오리온을 가운데 두고 — 북쪽이 위, 동쪽이 왼쪽
+  viewBasis(84, 3, B);
+  const bet = at(vec(idxOf("Betelgeuse", "Ori")));
+  const bel = at(vec(idxOf("Bellatrix", "Ori")));
+  const rig = at(vec(idxOf("Rigel", "Ori")));
+  check("  동쪽이 왼쪽 (베텔게우스 < 벨라트릭스)", bet.x < bel.x, `${bet.x.toFixed(1)} vs ${bel.x.toFixed(1)}`);
+  check("  북쪽이 위 (베텔게우스가 리겔보다 위)", bet.y < rig.y, `${bet.y.toFixed(1)} vs ${rig.y.toFixed(1)}`);
+
+  // 배율: 시선에서 fov/2 떨어진 점이 짧은 변의 절반에 온다
+  const s = viewScale(80, 800);
+  viewBasis(0, 0, B);
+  const edge = at(radecToUnit(0, 40), s);
+  near("  화각 가장자리 = 짧은 변의 절반", -edge.y, 400, 1e-6, "px");
+
+  // 실제 하늘: 북쪽을 보고 선 관측자(오른쪽=동, 위=천정)에게 별은 천구 북극을
+  // 반시계로 돈다. 수학 좌표(위가 +)에서 외적 > 0.
+  const dubhe = vec(idxOf("Dubhe", "UMa"));
+  const t0 = new Date("2026-01-15T12:00:00Z");
+  const t1 = new Date(t0.getTime() + 3600e3);
+  const screenNorth = (d) => {
+    const cols = skyMatrixCols(d, 37.5, 127);
+    const pw = applySky(cols, [0, 0, 1]);
+    const sw = applySky(cols, dubhe);
+    return [sw[0] - pw[0], sw[1] - pw[1]]; // 월드 x=동, y=천정
+  };
+  const [ax, ay] = screenNorth(t0);
+  const [bx, by] = screenNorth(t1);
+  check("  실제 하늘은 북극 둘레를 반시계로 돈다", ax * by - ay * bx > 0);
+
+  // 필름: 극을 가운데 두고 ra를 늘리면 반시계. 캔버스는 y가 아래라 외적 < 0.
+  viewBasis(184, 90, B);
+  const p0 = at(dubhe);
+  viewBasis(194, 90, B);
+  const p1 = at(dubhe);
+  check("  필름에서도 ra를 늘리면 반시계로 돈다", p0.x * p1.y - p0.y * p1.x < 0);
+
+  // 필름 마지막 장면: 화면 위 = 천정 쪽(적경 α+180), 오른쪽 = 동쪽(시간각 -90°)
+  const alpha = 274;
+  viewBasis(alpha, 90, B);
+  const up = at(radecToUnit(alpha + 180, 70));
+  const east = at(radecToUnit(alpha + 180 + 90, 70));
+  check("  극 장면에서 천정 쪽이 화면 위", up.y < 0 && Math.abs(up.x) < 1e-6);
+  check("  극 장면에서 동쪽이 화면 오른쪽", east.x > 0 && Math.abs(east.y) < 1e-6);
+
+  // 평사도법: 구 위의 원은 화면에서도 원이다. 극이 가운데면 궤적은 동심원이다.
+  const r0 = Math.hypot(p0.x, p0.y);
+  const r1 = Math.hypot(p1.x, p1.y);
+  near("  극이 가운데면 궤적 반지름이 일정", r1, r0, 1e-3, "px");
+}
+
+// ─── H15. 타임랩스 ───────────────────────────────────────────────────
+// 낮·밤 판정과 '다음 밤'이 틀리면 화면은 그저 조금 밝거나 어두울 뿐이라 눈으로
+// 못 잡는다. 외부 기준(천문박명 시각, 백야, 항성일)과 맞대 본다.
+console.log("H15. 타임랩스");
+{
+  const tl = await import("../lib/timelapse.ts");
+  // 서울 하지: 천문박명 끝은 한국시 21:4x 무렵
+  const nf = tl.nextNightfall(new Date("2026-06-21T03:00:00Z"), 37.5665, 126.978);
+  const kst = nf ? (nf.at.getUTCHours() + 9) % 24 + nf.at.getUTCMinutes() / 60 : -1;
+  check("  서울 하지의 밤은 천문박명(−18°)에서 시작", nf?.depth === -18, `${nf?.depth}`);
+  check("  서울 하지 천문박명 끝 21:30–22:10 KST", kst > 21.5 && kst < 22.17, kst.toFixed(2));
+  near("  그 순간 태양 고도 = −18°", tl.sunAltitude(nf.at, 37.5665, 126.978), -18, 0.05);
+  // 트롬쇠 하지: 해가 지지 않는다
+  check("  트롬쇠 하지는 밤이 없다(백야)",
+    tl.nextNightfall(new Date("2026-06-21T00:00:00Z"), 69.65, 18.96) === null);
+  // 적도 춘분 정오 → 태양 거의 천정
+  check("  적도 춘분 정오의 태양 고도 > 85°",
+    tl.sunAltitude(new Date("2026-03-20T12:00:00Z"), 0, 0) > 85);
+  // 낮 덮개: 밤 0, 낮 1, 단조 증가
+  check("  낮 덮개: 천문박명보다 어두우면 0", tl.skyWash(-20) === 0);
+  check("  낮 덮개: 해가 뜨기 직전이면 1", tl.skyWash(-4) === 1);
+  check("  낮 덮개는 박명에서 단조 증가",
+    [-18, -15, -12, -9, -6].every((a, i, arr) => i === 0 || tl.skyWash(a) >= tl.skyWash(arr[i - 1])));
+  // 지방항성시: 태양일 하루에 항성시는 약 3분 56초 더 간다
+  const d0 = new Date("2026-01-01T00:00:00Z");
+  const d1 = new Date(d0.getTime() + 86400e3);
+  let dh = tl.localSiderealHours(d1, 127) - tl.localSiderealHours(d0, 127);
+  if (dh < 0) dh += 24;
+  near("  하루에 항성시가 3분 56초 앞선다", dh * 3600, 235.9, 1.5, "s");
+  // 현지 태양시: 경도 15°마다 1시간
+  const lm = tl.localMeanSolarTime(new Date("2026-01-01T00:00:00Z"), 135);
+  check("  경도 135°E의 태양시는 UTC+9", lm.time === "09:00", lm.time);
+  // 속도 단계: 오름차순, 1초에 하루를 넘지 않음(넘으면 한 프레임에 6° 넘게 돈다)
+  const rates = tl.SPEED_STOPS.map((s) => s.rate);
+  check("  속도 단계는 오름차순", rates.every((r, i) => i === 0 || r > rates[i - 1]));
+  check("  가장 빠른 속도는 1초에 하루", rates[rates.length - 1] === 86400);
+  check("  기본 속도가 목록 안", tl.DEFAULT_SPEED_INDEX >= 0 && tl.DEFAULT_SPEED_INDEX < rates.length);
+}
+
 console.log(`\n═══ ${pass} 통과 / ${fail} 실패 ═══`);
 if (fail) {
   console.log("\n실패 항목:");

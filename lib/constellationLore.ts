@@ -23,14 +23,14 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
   },
   Ant: {
     ko: "라카유가 18세기 중반 희망봉에서 만든 별자리로, 진공 펌프를 기린다. 밝은 별이 없어 도시에서는 거의 보이지 않는다.",
-    en: "Lacaille's tribute to the air pump, invented at the Cape of Good Hope in the mid-1700s. With no bright stars, it is all but invisible from a city.",
+    en: "Created by Lacaille at the Cape of Good Hope in the mid-1700s as a tribute to the air pump. With no bright stars, it is all but invisible from a city.",
   },
   Aps: {
     ko: "케이서와 더 하우트만이 남긴 남천 별자리. 극락조를 그렸는데, 당시 유럽에 들어온 표본은 다리가 잘려 있어 '땅에 내려앉지 않는 새'로 오해받았다.",
     en: "A southern figure from Keyser and de Houtman, depicting the bird-of-paradise. Specimens reaching Europe had their legs removed, feeding the myth of a bird that never lands.",
   },
   Aqr: {
-    ko: "물을 쏟는 사람. 황도 12궁 중 하나이며 프톨레마이오스 48개에 든다. 주변에 고래자리·물고기자리·에리다누스자리 같은 '물의 별자리'가 모여 있다.",
+    ko: "물을 쏟는 사람. 황도 12궁의 하나로, 프톨레마이오스 48개에도 든다. 주변에 고래자리·물고기자리·에리다누스자리 같은 '물의 별자리'가 모여 있다.",
     en: "The water-bearer, a zodiac constellation and one of Ptolemy's 48. It sits amid a whole region of watery figures — Cetus, Pisces, Eridanus.",
   },
   Aql: {
@@ -38,28 +38,28 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The eagle that carried Zeus's thunderbolts. Its star Altair forms the Summer Triangle with Vega in Lyra and Deneb in Cygnus.",
   },
   Ara: {
-    ko: "신들이 티탄과 싸우기 전 맹세를 올린 제단. 프톨레마이오스 48개 중 하나로, 남반구에서 은하수를 배경으로 놓인다.",
+    ko: "신들이 티탄과 싸우기 전 맹세를 올린 제단. 프톨레마이오스 48개에 드는 별자리로, 남반구 은하수를 배경으로 놓인다.",
     en: "The altar where the gods swore their oath before battling the Titans. One of Ptolemy's 48, set against the southern Milky Way.",
   },
   Ari: {
-    ko: "황금 양털을 지닌 숫양. 약 2천 년 전에는 춘분점이 이 별자리에 있어 황도의 시작으로 여겨졌다. 세차운동으로 지금 춘분점은 물고기자리에 있다.",
+    ko: "황금 양털을 지닌 숫양. 약 2천 년 전에는 춘분점이 이 별자리에 있어 황도의 시작으로 여겨졌다. 세차운동 때문에 지금은 춘분점이 물고기자리로 옮겨 갔다.",
     en: "The ram of the Golden Fleece. Two thousand years ago the vernal equinox lay here, making it the start of the zodiac; precession has since moved that point into Pisces.",
   },
   Aur: {
-    ko: "마차를 모는 사람. 북천에서 여섯 번째로 밝은 별 카펠라가 여기 있고, 겨울 은하수를 가로질러 산개성단 세 개(M36·M37·M38)를 품는다.",
+    ko: "마차를 모는 사람. 밤하늘에서 여섯 번째로 밝은 별 카펠라가 여기 있고, 겨울 은하수에 걸쳐 있어 산개성단 세 개(M36·M37·M38)를 품는다.",
     en: "The charioteer. It holds Capella, the sixth-brightest star in the sky, and straddles the winter Milky Way with three open clusters — M36, M37 and M38.",
   },
   Boo: {
-    ko: "큰곰을 쫓는 목동. 북반구에서 가장 밝은 별 아르크투루스가 여기 있으며, 큰곰자리 국자 손잡이의 곡선을 그대로 이어 내려오면 찾을 수 있다.",
+    ko: "큰곰을 쫓는 목동. 북천에서 가장 밝은 별 아르크투루스가 있는데, 큰곰자리 국자 손잡이의 곡선을 그대로 이어 내려오면 찾을 수 있다.",
     en: "The herdsman driving the Great Bear. It contains Arcturus, the brightest star in the northern sky — follow the curve of the Big Dipper's handle straight to it.",
   },
   Cae: {
-    ko: "라카유가 만든 남천 별자리로, 조각가의 끌을 그렸다. 88개 중 여덟 번째로 작고 밝은 별이 없다.",
+    ko: "라카유가 만든 남천 별자리로, 조각가의 끌을 그렸다. 88개 중 여덟 번째로 작은 별자리이며 밝은 별이 없다.",
     en: "Lacaille's engraving chisel. It is the eighth-smallest constellation and contains no bright stars.",
   },
   Cam: {
-    ko: "1612년 플란시우스가 북극 근처의 별 없는 빈 공간을 메우려 만든 별자리. 이름은 기린이지만 3등성보다 밝은 별이 하나도 없다.",
-    en: "Invented by Plancius in 1612 to fill an empty patch near the pole. Despite naming a giraffe, it has no star brighter than third magnitude.",
+    ko: "1612년 플란시우스가 북극 근처의 빈 하늘을 메우려 만든 별자리. 이름은 기린이지만 3등성보다 밝은 별이 하나도 없다.",
+    en: "Invented by Plancius in 1612 to fill an empty patch near the pole. It may be named for a giraffe, but it has no star brighter than third magnitude.",
   },
   Cnc: {
     ko: "헤라클레스의 발에 밟힌 게. 황도 12궁 중 가장 어둡지만, 맨눈으로도 흐릿하게 보이는 벌집성단(프레세페, M44)이 한가운데 있다.",
@@ -78,11 +78,11 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The lesser dog — essentially just two stars, but one of them is Procyon, which forms the Winter Triangle with Sirius and Betelgeuse.",
   },
   Cap: {
-    ko: "상반신은 염소, 하반신은 물고기인 기묘한 형상. 황도 12궁에서 가장 작으며, 판 신이 괴물을 피해 강에 뛰어들다 변한 모습이라 전해진다.",
+    ko: "상반신은 염소, 하반신은 물고기인 기묘한 형상. 황도 12궁에서 가장 작다. 판 신이 괴물을 피해 강에 뛰어들다 변한 모습이라고 한다.",
     en: "A goat with a fish's tail — the smallest zodiac constellation. The story has the god Pan leaping into a river to escape a monster and half-transforming.",
   },
   Car: {
-    ko: "원래 거대한 아르고자리의 일부였던 배의 용골. 라카유가 아르고자리를 셋으로 나누면서 독립했다. 두 번째로 밝은 별 카노푸스와 거대한 용골자리 성운이 있다.",
+    ko: "원래 커다란 아르고자리의 일부였던 배의 용골. 라카유가 아르고자리를 셋으로 나누면서 독립했다. 두 번째로 밝은 별 카노푸스와 거대한 용골자리 성운이 있다.",
     en: "The keel of the ship Argo, split off when Lacaille divided that vast constellation into three. It holds Canopus, the second-brightest star, and the vast Carina Nebula.",
   },
   Cas: {
@@ -94,15 +94,15 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The centaur Chiron. It contains Proxima Centauri, the nearest star to the Sun at 4.2 light-years, and Omega Centauri, the sky's largest globular cluster.",
   },
   Cep: {
-    ko: "카시오페이아의 남편이자 안드로메다의 아버지인 왕. 오각형 집 모양으로 그려진다. 변광성 주기와 밝기의 관계가 처음 밝혀진 델타 세페이가 여기 있고, 그 발견이 우주의 거리를 재는 잣대가 됐다.",
+    ko: "카시오페이아의 남편이자 안드로메다의 아버지인 왕. 오각형 집 모양으로 그려진다. 델타 세페이가 여기 있다. 이 별에서 이름을 딴 세페이드 변광성은 주기와 밝기의 관계가 밝혀지면서 우주의 거리를 재는 잣대가 됐다.",
     en: "The king, husband of Cassiopeia and father of Andromeda, drawn as a lopsided house. Delta Cephei gave its name to the Cepheid variables, whose period–luminosity law became the yardstick for cosmic distance.",
   },
   Cet: {
-    ko: "안드로메다를 삼키려던 바다괴물. 네 번째로 큰 별자리이며, 밝기가 300일 주기로 2등급에서 10등급까지 오르내리는 최초의 발견 변광성 미라가 있다.",
-    en: "The sea monster sent to devour Andromeda. The fourth-largest constellation, it holds Mira — the first variable star ever recognised, swinging from second to tenth magnitude over 300 days.",
+    ko: "안드로메다를 삼키려던 바다괴물. 네 번째로 큰 별자리다. 처음으로 발견된 변광성 미라가 있는데, 밝기가 300일 주기로 2등급에서 10등급까지 오르내린다.",
+    en: "The sea monster sent to devour Andromeda. The fourth-largest constellation, it holds Mira — the first variable star ever recognised, swinging from second to tenth magnitude on a 300-day cycle.",
   },
   Cha: {
-    ko: "케이서와 더 하우트만이 만든 남천 별자리. 카멜레온을 그렸으며 남극 가까이 있어 북반구에서는 볼 수 없다.",
+    ko: "케이서와 더 하우트만이 카멜레온을 그려 넣은 남천 별자리. 천구 남극 가까이 있어 북반구에서는 볼 수 없다.",
     en: "The chameleon, from Keyser and de Houtman. It lies so close to the south celestial pole that it never rises for northern observers.",
   },
   Cir: {
@@ -135,7 +135,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
   },
   Cru: {
     ko: "88개 중 가장 작지만 남반구에서 가장 유명한 별자리. 긴 축을 남쪽으로 4.5배 연장하면 천구 남극의 위치를 알 수 있어 항해에 쓰였다. 여러 나라 국기에 그려져 있다.",
-    en: "The smallest of the 88 and the most famous in the south. Extend its long axis four and a half times and you find the south celestial pole — a navigator's trick, and the reason it appears on several national flags.",
+    en: "The smallest of the 88 and the most famous in the south. Extend its long axis four and a half times and you find the south celestial pole — a navigator's trick. It also appears on several national flags.",
   },
   Cyg: {
     ko: "은하수를 따라 날아 내려오는 백조. '북쪽의 십자가'로도 불린다. 꼬리의 데네브는 지구에서 1,500광년 넘게 떨어져 있는데도 1등성으로 보일 만큼 밝다.",
@@ -146,7 +146,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The dolphin that rescued the poet Arion. Small, but its five-star diamond is crisp enough to spot easily.",
   },
   Dor: {
-    ko: "케이서와 더 하우트만이 만든 별자리. 만새기(황새치)를 그렸다. 우리 은하의 위성은하인 대마젤란은하 대부분이 이 영역에 들어온다.",
+    ko: "케이서와 더 하우트만이 그린 만새기(황새치). 우리 은하의 위성은하인 대마젤란은하 대부분이 이 영역에 들어온다.",
     en: "The dolphinfish, from Keyser and de Houtman. Most of the Large Magellanic Cloud, a satellite galaxy of our own, lies within its borders.",
   },
   Dra: {
@@ -158,7 +158,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The little horse — second-smallest of the 88, showing only a head. One of Ptolemy's 48, though it has no bright stars.",
   },
   Eri: {
-    ko: "태양신의 마차를 몰다 추락한 파에톤이 떨어진 강. 오리온의 발치에서 시작해 남쪽으로 굽이쳐 내려가는, 여섯 번째로 큰 별자리다.",
+    ko: "태양신의 마차를 몰다 추락한 파에톤이 빠진 강. 오리온의 발치에서 시작해 남쪽으로 굽이쳐 내려간다. 여섯 번째로 큰 별자리다.",
     en: "The river into which Phaethon fell after losing control of the Sun's chariot. It winds south from Orion's foot and is the sixth-largest constellation.",
   },
   For: {
@@ -170,7 +170,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The twins Castor and Pollux, marked by two bright stars side by side. The Geminid meteor shower radiates from here each December.",
   },
   Gru: {
-    ko: "케이서와 더 하우트만이 만든 두루미. 원래는 남쪽물고기자리의 일부로 여겨지던 별들이다.",
+    ko: "케이서와 더 하우트만이 그린 두루미. 원래는 남쪽물고기자리의 일부로 여겨지던 별들이다.",
     en: "The crane, from Keyser and de Houtman. Its stars were once considered part of Piscis Austrinus.",
   },
   Her: {
@@ -186,11 +186,11 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The nine-headed serpent slain by Heracles — the largest constellation, sprawling over 100 degrees. One end is rising while the other is still below the horizon.",
   },
   Hyi: {
-    ko: "케이서와 더 하우트만이 만든 작은 물뱀. 이름이 비슷한 바다뱀자리(Hydra)와는 전혀 다른 별자리이며, 남극 가까이 있다.",
+    ko: "케이서와 더 하우트만이 남긴 작은 물뱀. 이름이 비슷한 바다뱀자리(Hydra)와는 전혀 다른 별자리로 남극 가까이에 있다.",
     en: "The lesser water snake, from Keyser and de Houtman — a different constellation from the similarly named Hydra, and far to the south.",
   },
   Ind: {
-    ko: "케이서와 더 하우트만이 만든 별자리로, 항해 중 마주친 원주민을 그렸다. 어둡고 눈에 띄는 천체가 적다.",
+    ko: "케이서와 더 하우트만이 만든 별자리로, 항해 중 마주친 원주민을 그렸다. 별이 어둡고 눈에 띄는 천체도 적다.",
     en: "The Indian, from Keyser and de Houtman, depicting an indigenous figure encountered on their voyages. Faint, with few notable objects.",
   },
   Lac: {
@@ -198,8 +198,8 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Hevelius's lizard, squeezed into the gap between Cygnus and Andromeda. With no bright stars it reads as a faint zigzag.",
   },
   Leo: {
-    ko: "헤라클레스가 맨손으로 잡은 네메아의 사자. 앞가슴의 '낫' 모양이 뚜렷하고 그 아래 레굴루스가 놓인다. 황도에 걸쳐 있어 행성이 자주 지나간다.",
-    en: "The Nemean lion Heracles killed bare-handed. The Sickle marks its head and mane, with Regulus at its base. Being on the ecliptic, planets pass through often.",
+    ko: "헤라클레스가 맨손으로 잡은 네메아의 사자. 머리와 갈기를 이루는 '낫' 모양이 뚜렷하고 그 아래 레굴루스가 놓인다. 황도에 걸쳐 있어 행성이 자주 지나간다.",
+    en: "The Nemean lion Heracles killed bare-handed. The Sickle marks its head and mane, with Regulus at its base. It lies on the ecliptic, so planets pass through often.",
   },
   LMi: {
     ko: "헤벨리우스가 사자자리와 큰곰자리 사이에 만든 작은 사자. 알파성이 지정되지 않은 몇 안 되는 별자리 중 하나다.",
@@ -210,11 +210,11 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The hare crouching at Orion's feet. It contains Hind's Crimson Star, a carbon star famous for its deep red colour.",
   },
   Lib: {
-    ko: "정의의 저울. 원래는 전갈의 집게로 여겨졌고, 가장 밝은 두 별의 이름(주벤엘게누비·주벤에스차말리)이 아직 '남쪽 집게', '북쪽 집게'라는 뜻이다.",
+    ko: "정의의 저울. 원래는 전갈의 집게로 여겨졌다. 가장 밝은 두 별의 이름(주벤엘게누비·주벤에스차말리)에는 아직도 '남쪽 집게', '북쪽 집게'라는 뜻이 남아 있다.",
     en: "The scales of justice — once the claws of the Scorpion. Its two brightest stars are still named Zubenelgenubi and Zubeneschamali: the southern and northern claw.",
   },
   Lup: {
-    ko: "센타우루스가 창으로 꿴 늑대. 프톨레마이오스 48개 중 하나이며 은하수 가장자리에 놓인다.",
+    ko: "센타우루스가 창으로 꿴 늑대. 프톨레마이오스 48개에 들며 은하수 가장자리에 놓인다.",
     en: "The wolf impaled on the Centaur's spear. One of Ptolemy's 48, lying along the edge of the Milky Way.",
   },
   Lyn: {
@@ -226,11 +226,11 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Orpheus's lyre. Small, but home to Vega, the fifth-brightest star — and, in about twelve thousand years, the pole star once again.",
   },
   Men: {
-    ko: "라카유가 희망봉의 테이블산을 기려 만든 별자리. 지형을 기린 유일한 별자리이며, 88개 중 가장 어둡다.",
+    ko: "라카유가 희망봉의 테이블산을 기려 만든 별자리. 지형에서 이름을 딴 유일한 별자리로, 88개 중 가장 어둡다.",
     en: "Lacaille's tribute to Table Mountain above Cape Town — the only constellation named after a landform, and the faintest of the 88.",
   },
   Mic: {
-    ko: "라카유가 만든 현미경. 그가 만든 남천 14개 별자리는 대부분 과학기구의 이름을 땄다.",
+    ko: "라카유가 남긴 현미경. 그가 만든 남천 14개 별자리는 대부분 과학기구에서 이름을 땄다.",
     en: "Lacaille's microscope. Most of his fourteen southern constellations are named for scientific instruments.",
   },
   Mon: {
@@ -238,15 +238,15 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Plancius's unicorn, set in the Milky Way between Orion and Canis Major. Its stars are faint but it holds the Rosette Nebula and the Christmas Tree Cluster.",
   },
   Mus: {
-    ko: "케이서와 더 하우트만이 만든 파리. 남십자자리 바로 아래에 있으며, 곤충을 그린 유일한 별자리다.",
+    ko: "케이서와 더 하우트만이 만든 파리. 남십자자리 바로 아래에 있고 곤충을 그린 별자리로는 유일하다.",
     en: "The fly, from Keyser and de Houtman, just below the Southern Cross — the only constellation depicting an insect.",
   },
   Nor: {
-    ko: "라카유가 만든 직각자. 경계가 다시 그어지면서 원래 알파·베타로 지정됐던 별들이 이웃 별자리로 넘어가, 지금은 알파성이 없다.",
+    ko: "라카유가 만든 직각자. 경계가 다시 그어지면서 원래 알파·베타로 지정됐던 별들이 이웃 별자리로 넘어가는 바람에 지금은 둘 다 없다.",
     en: "Lacaille's set square. Later boundary revisions moved its alpha and beta stars into a neighbouring constellation, so it now has neither.",
   },
   Oct: {
-    ko: "라카유가 만든 팔분의. 천구 남극이 이 안에 있지만, 북극성에 해당하는 밝은 별이 없어 남반구에는 맨눈으로 극을 짚을 별이 없다.",
+    ko: "라카유가 만든 팔분의. 천구 남극이 이 안에 있지만 남반구 하늘에는 북극성처럼 맨눈으로 극을 짚어 줄 밝은 별이 없다.",
     en: "Lacaille's octant. The south celestial pole lies within it, but there is no bright star to mark it — the southern sky has no Polaris.",
   },
   Oph: {
@@ -254,11 +254,11 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Asclepius, the healer, holding a serpent. The ecliptic crosses it, yet it is not one of the twelve signs — hence its reputation as the thirteenth. It contains Barnard's Star, which shows the largest proper motion of any star.",
   },
   Ori: {
-    ko: "허리띠의 세 별로 즉시 알아볼 수 있는 사냥꾼. 붉은 초거성 베텔게우스와 푸른 리겔이 대각으로 마주 놓여 별의 색 차이를 맨눈으로 확인할 수 있다. 허리띠 아래 오리온 대성운(M42)은 별이 지금 태어나고 있는 곳이다.",
+    ko: "허리띠의 세 별로 단번에 알아보는 사냥꾼. 붉은 초거성 베텔게우스와 푸른 리겔이 대각으로 마주 놓여 별의 색 차이를 맨눈으로 확인할 수 있다. 허리띠 아래 오리온 대성운(M42)에서는 지금도 별이 태어난다.",
     en: "The hunter, identified instantly by the three stars of his belt. Red supergiant Betelgeuse and blue Rigel sit diagonally opposite, letting you see stellar colour with the naked eye. Below the belt, the Orion Nebula (M42) is a place where stars are forming right now.",
   },
   Pav: {
-    ko: "케이서와 더 하우트만이 만든 공작. 가장 밝은 별 피코크는 20세기 영국 항법 성표를 위해 이름이 붙여진 비교적 최근의 명명이다.",
+    ko: "케이서와 더 하우트만이 만든 공작. 가장 밝은 별 피코크는 20세기 영국 항법 성표에 쓰려고 붙인 이름으로, 비교적 최근에 생겼다.",
     en: "The peacock, from Keyser and de Houtman. Its brightest star was named Peacock only in the twentieth century, for a British air-navigation catalogue.",
   },
   Peg: {
@@ -266,7 +266,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The winged horse born from Medusa's blood. Its Great Square is the landmark of the autumn sky — though one of its four corners actually belongs to Andromeda.",
   },
   Per: {
-    ko: "메두사의 목을 벤 영웅. 손에 든 머리에 해당하는 알골은 2.87일마다 짝별에 가려 눈에 띄게 어두워지는 식변광성으로, '악마의 별'로 불려 왔다.",
+    ko: "메두사의 목을 벤 영웅. 손에 든 머리 자리에 있는 알골은 식변광성이다. 2.87일마다 짝별에 가려 눈에 띄게 어두워져 '악마의 별'로 불려 왔다.",
     en: "The hero who beheaded Medusa. Algol, marking the head he carries, dims noticeably every 2.87 days as its companion eclipses it — which is why it has long been called the Demon Star.",
   },
   Phe: {
@@ -278,7 +278,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Lacaille's painter's easel. Beta Pictoris was among the first stars imaged with a protoplanetary disc, opening the way to exoplanet science.",
   },
   Psc: {
-    ko: "끈으로 묶인 두 마리 물고기. 세차운동으로 현재 춘분점이 이 별자리 안에 있어, 태양의 1년 여정이 여기서 시작된다.",
+    ko: "끈으로 묶인 두 마리 물고기. 세차운동으로 지금은 춘분점이 이 별자리 안에 있어서 태양의 1년 여정이 여기서 시작된다.",
     en: "Two fish joined by a cord. Precession has placed the vernal equinox inside its borders, so the Sun's yearly circuit now begins here.",
   },
   PsA: {
@@ -290,23 +290,23 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The stern of the ship Argo, one of the three pieces it was divided into. The Milky Way runs through it, making it rich in open clusters.",
   },
   Pyx: {
-    ko: "라카유가 아르고자리 근처에 만든 나침반. 배의 부속이지만 아르고자리 분할과는 별개로 새로 만들어진 별자리다.",
+    ko: "라카유가 아르고자리 근처에 만든 나침반. 배의 부속이지만 아르고자리를 나눈 것과는 별개로 새로 만든 별자리다.",
     en: "Lacaille's mariner's compass, placed near Argo. Although a ship's instrument, it was created separately from the division of Argo itself.",
   },
   Ret: {
-    ko: "라카유가 만든 그물. 망원경 접안부의 십자선(레티클)을 가리키며, 그가 별 위치를 재는 데 실제로 쓴 도구다.",
+    ko: "라카유가 만든 그물. 이 그물은 망원경 접안부의 십자선(레티클)으로, 그가 별 위치를 잴 때 실제로 쓴 도구다.",
     en: "Lacaille's reticle — the crosshair grid in a telescope eyepiece, the very tool he used to measure star positions.",
   },
   Sge: {
-    ko: "88개 중 세 번째로 작은 별자리. 화살 모양이 작지만 또렷하고, 헤라클레스가 쏜 화살이라고도 전한다.",
-    en: "The arrow — third-smallest of the constellations, but its shape is small and unmistakable. Some tellings make it the arrow loosed by Heracles.",
+    ko: "88개 중 세 번째로 작은 별자리. 화살 모양이 작지만 또렷하다. 헤라클레스가 쏜 화살이라는 이야기도 전한다.",
+    en: "The arrow — third-smallest of the constellations, yet its little shape is unmistakable. Some tellings make it the arrow loosed by Heracles.",
   },
   Sgr: {
-    ko: "활을 당긴 켄타우로스. 밝은 별들이 만드는 '찻주전자' 모양으로 찾는다. 그 주전자 주둥이 방향이 우리 은하의 중심이며, 은하수가 가장 두껍고 밝게 보이는 곳이다.",
+    ko: "활을 당긴 켄타우로스. 밝은 별들이 만드는 '찻주전자' 모양으로 찾는다. 주전자 주둥이가 가리키는 쪽이 우리 은하의 중심이라 은하수도 이곳에서 가장 두껍고 밝게 보인다.",
     en: "The archer, found by the Teapot its bright stars form. The spout points toward the centre of our galaxy — which is why the Milky Way is thickest and brightest here.",
   },
   Sco: {
-    ko: "오리온을 찔러 죽인 전갈. 붉은 초거성 안타레스가 심장 자리에 놓이는데, 그 이름은 '화성의 맞수'라는 뜻으로 색이 비슷해서 붙었다. 꼬리가 갈고리처럼 휘어 실제 전갈처럼 보이는 드문 별자리다.",
+    ko: "오리온을 찔러 죽인 전갈. 붉은 초거성 안타레스가 심장 자리에 놓인다. 화성과 색이 비슷해 '화성의 맞수'라는 뜻의 이름이 붙었다. 꼬리가 갈고리처럼 휘어 실제 전갈처럼 보이는 드문 별자리다.",
     en: "The scorpion that killed Orion. Red supergiant Antares marks its heart — the name means rival of Mars, for their similar colour. Its hooked tail makes it one of the few constellations that genuinely resembles its namesake.",
   },
   Scl: {
@@ -314,11 +314,11 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Lacaille's sculptor's studio. The south galactic pole lies here, so we look out of our own galaxy's dust and straight into deep space.",
   },
   Sct: {
-    ko: "헤벨리우스가 폴란드 왕 얀 3세 소비에스키를 기려 만든 방패. 정치적 인물을 기린 유일한 별자리이며, 은하수의 밝은 부분인 '방패자리 성운'이 여기 있다.",
+    ko: "헤벨리우스가 폴란드 왕 얀 3세 소비에스키를 기려 만든 방패. 정치적 인물을 기린 유일한 별자리다. 은하수의 밝은 부분인 '방패자리 성운'도 여기 있다.",
     en: "Hevelius's shield, honouring King John III Sobieski of Poland — the only constellation commemorating a political figure. It contains the Scutum Star Cloud, a bright knot of the Milky Way.",
   },
   Ser: {
-    ko: "뱀주인이 두 손으로 붙든 뱀. 뱀주인자리를 사이에 두고 머리(Caput)와 꼬리(Cauda)로 완전히 갈라진, 하늘에서 유일하게 두 조각으로 나뉜 별자리다.",
+    ko: "뱀주인이 두 손으로 붙든 뱀. 뱀주인자리를 사이에 두고 머리(Caput)와 꼬리(Cauda)로 완전히 갈라져 있다. 하늘에서 유일하게 두 조각으로 나뉜 별자리다.",
     en: "The serpent held by Ophiuchus — and the only constellation split into two separate pieces, the head (Caput) and tail (Cauda), divided by the serpent-bearer between them.",
   },
   Sex: {
@@ -326,19 +326,19 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "Hevelius's sextant, named in memory of the instrument he lost when his observatory burned.",
   },
   Tau: {
-    ko: "에우로페를 태우고 바다를 건넌 황소. 붉은 알데바란이 눈에 해당하고, 어깨에는 맨눈으로 여섯에서 일곱 개가 보이는 플레이아데스 성단이 얹혀 있다. 초신성 잔해인 게성운(M1)도 여기 있다.",
+    ko: "에우로페를 태우고 바다를 건넌 황소. 붉은 알데바란이 눈에 해당하고 어깨에는 플레이아데스 성단이 얹혀 있는데, 맨눈으로는 여섯에서 일곱 개가 보인다. 초신성 잔해인 게성운(M1)도 여기 있다.",
     en: "The bull that carried Europa across the sea. Red Aldebaran is its eye, and the Pleiades ride on its shoulder — six or seven stars to the naked eye. The Crab Nebula (M1), a supernova remnant, lies here too.",
   },
   Tel: {
-    ko: "라카유가 만든 망원경. 그가 남천 별자리를 만들 때 실제로 쓴 도구를 기린 것이다.",
+    ko: "라카유의 망원경. 그가 남천 별자리를 만들 때 실제로 쓴 도구를 기렸다.",
     en: "Lacaille's telescope, honouring the instrument he used to chart the southern sky in the first place.",
   },
   Tri: {
-    ko: "단순한 삼각형이지만 프톨레마이오스 48개에 드는 오래된 별자리. 나선은하 M33(삼각형자리 은하)이 여기 있으며, 아주 어두운 하늘에서는 맨눈으로도 보인다고 한다.",
+    ko: "단순한 삼각형이지만 프톨레마이오스 48개에 드는 오래된 별자리. 나선은하 M33(삼각형자리 은하)이 있는데, 아주 어두운 하늘에서는 맨눈으로도 보인다고 한다.",
     en: "A plain triangle, yet one of Ptolemy's original 48. It holds M33, the Triangulum Galaxy, which under truly dark skies is said to be visible to the unaided eye.",
   },
   TrA: {
-    ko: "케이서와 더 하우트만이 만든 남쪽 삼각형. 북쪽의 삼각형자리보다 밝은 별로 이루어져 오히려 눈에 잘 띈다.",
+    ko: "케이서와 더 하우트만이 그린 남쪽 삼각형. 북쪽의 삼각형자리보다 밝은 별로 이루어져 오히려 눈에 잘 띈다.",
     en: "The southern triangle, from Keyser and de Houtman. Its stars are brighter than those of the northern Triangulum, making it the easier of the two to see.",
   },
   Tuc: {
@@ -346,19 +346,19 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The toucan, from Keyser and de Houtman. It contains the Small Magellanic Cloud and 47 Tucanae, the second-brightest globular cluster in the sky.",
   },
   UMa: {
-    ko: "제우스에게 곰으로 변한 님프 칼리스토. 일곱 별이 만드는 북두칠성은 별자리 전체가 아니라 그 일부다. 국자 끝 두 별을 이어 다섯 배 늘이면 북극성에 닿는다.",
-    en: "The nymph Callisto, turned into a bear by Zeus. The seven stars of the Big Dipper are only part of it. Extend the two stars at the end of the bowl five times and you reach Polaris.",
+    ko: "제우스가 곰으로 바꾼 님프 칼리스토. 일곱 별이 만드는 북두칠성은 별자리 전체가 아니라 그 일부다. 국자 끝 두 별을 이어 다섯 배 늘이면 북극성에 닿는다.",
+    en: "The nymph Callisto, turned into a bear by Zeus. The seven stars of the Big Dipper are only part of it. Extend the line through the two stars at the end of the bowl five times and you reach Polaris.",
   },
   UMi: {
-    ko: "꼬리 끝에 북극성이 달린 작은 곰. 북극성은 특별히 밝지는 않지만 천구 북극에서 1도도 안 떨어져 있어 밤새 거의 움직이지 않는다. 고도가 곧 관측지의 위도다.",
+    ko: "꼬리 끝에 북극성이 달린 작은 곰. 북극성은 특별히 밝지는 않지만 천구 북극에서 1도도 안 떨어져 있어 밤새 거의 움직이지 않는다. 이 별의 고도가 곧 관측지의 위도다.",
     en: "The little bear, with Polaris at the tip of its tail. Polaris is not especially bright, but it sits less than a degree from the celestial pole and barely moves all night. Its altitude equals your latitude.",
   },
   Vel: {
-    ko: "아르고자리를 나눈 세 조각 중 배의 돛. 라카유의 분할 때문에 알파와 베타 별이 없다 — 그 부호들은 용골자리로 갔다.",
+    ko: "아르고자리를 셋으로 나눴을 때 돛에 해당하는 조각. 라카유의 분할 때문에 알파와 베타 별이 없다. 그 부호는 용골자리로 넘어갔다.",
     en: "The sails of the ship Argo. Because of Lacaille's division it has no alpha or beta star — those designations went to Carina.",
   },
   Vir: {
-    ko: "밀 이삭을 든 수확의 여신. 두 번째로 큰 별자리이며, 이삭에 해당하는 스피카가 밝다. 수천 개의 은하가 모인 처녀자리 은하단이 이 방향에 있다.",
+    ko: "밀 이삭을 든 수확의 여신. 두 번째로 큰 별자리로, 이삭에 해당하는 스피카가 밝다. 은하 수천 개가 모인 처녀자리 은하단이 이 방향에 있다.",
     en: "The harvest maiden holding an ear of wheat — the second-largest constellation, marked by bright Spica. The Virgo Cluster, with thousands of galaxies, lies in this direction.",
   },
   Vol: {
@@ -366,7 +366,7 @@ export const CONSTELLATION_LORE: Record<string, Lore> = {
     en: "The flying fish, from Keyser and de Houtman — the fish that leapt onto their decks during the voyage.",
   },
   Vul: {
-    ko: "헤벨리우스가 만든 작은 여우. 원래는 거위를 문 여우였다. 최초로 발견된 행성상성운 아령성운(M27)이 여기 있고, 최초의 펄서도 이 방향에서 검출됐다.",
+    ko: "헤벨리우스가 만든 작은 여우. 원래는 거위를 문 여우였다. 처음 발견된 행성상성운인 아령성운(M27)이 여기 있고 최초의 펄서도 이 방향에서 검출됐다.",
     en: "Hevelius's little fox, originally shown carrying a goose. It holds the Dumbbell Nebula (M27), the first planetary nebula ever found, and the first pulsar was detected in this direction.",
   },
 };

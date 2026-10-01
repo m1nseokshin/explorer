@@ -552,6 +552,48 @@ three slightly-deformed shock shells, radial filaments of varying length and wei
 one-frame point flash with a short diffraction cross. Meteors cross every 4–11 seconds, a
 tapered line with a small bright head — no halo.
 
+**`about-film`** — the About page opens with a scroll-scrubbed film: a sticky full-viewport
+2D canvas, 11 screens tall, where scroll position *is* the playhead (smoothed at τ = 0.32s,
+so the film glides to a stop rather than halting with the wheel). It is not a video file.
+Every point in it is a real catalogue star at its real position, which is the product's
+whole premise; a baked video would be a fixed-resolution picture of that claim rather than
+the claim itself. Six scenes, each with one caption: points → lines (Orion traced stroke by
+stroke) → 88 (the rest spread outward from Orion like a wave) → regions (IAU boundaries,
+largest and smallest highlighted) → axis (star trails around the pole) → inverse (the
+observer's horizon and the pole's altitude = latitude).
+
+- **Stereographic, not perspective.** It is conformal at 140° fields, and circles on the
+  sphere stay circles — with the pole centred, every star trail is one `arc()` about the
+  screen centre. `lib/skyProjection.ts` is three-free so the page never downloads a 3D runtime.
+- **Lines stop short of stars** (star radius + 2px), as printed atlases do. A 1.5px line run
+  through a 1px star buries the star.
+- **Captions never overlap.** The outgoing caption reaches 0 exactly at the scene boundary;
+  the incoming one starts there. Keyframe ranges must cover 0..1 in full — Motion hands
+  scroll-linked opacity to the browser's ScrollTimeline, which fills an uncovered tail with
+  the element's *base* opacity, so a caption that ended at 0.15 crept back in by the end.
+- **The caption band is cleared, not scrimmed.** The bottom 45% of the drawn sky is erased
+  with a `destination-out` linear ramp to 72%. Black on black, so the flat marketing rule
+  holds; the 88-scene lines otherwise ran straight through the text.
+- **Reduced motion cuts instead of flying.** The camera holds one framing per scene and
+  dips to black at the cut. Lines still draw and trails still grow — the view does not move.
+- Readouts (`4,995 STARS`, `EXPOSURE 05h 38m`, `LAT 37.6°`) are computed from the data,
+  never typed in.
+- **Stars breathe, but never together.** Unlike `home-starfield`, every star brightens and
+  dims — each on its own pair of slow sines (4–10s and 2–5s periods, ±22–55%). Because no two
+  stars share a period, the field's total brightness stays flat and nothing reads as the
+  whole page pulsing; what the eye catches is a few stars swelling and fading at a time.
+  A uniform shared sine is still forbidden. Off under reduced motion.
+
+**`constellation-atlas`** — all 88 figures as a grid of buttons, ordered **north to south**.
+The ordering carries the story: as scroll passes each era, that era's figures draw in, and
+under Ptolemy the bottom rows stay dark — the southern sky was literally empty until the
+navigators and Lacaille filled it. States: future (stars at 20%, no lines), current (lines
+90%), past (lines 38%), and after 1922 all at 60%. Tapping a cell opens a native `<dialog>`
+(focus trap, Esc, focus return for free) with the figure, lore and facts; ←/→ step through.
+Hover and draw state live in CSS variables (`--hv`, `--drawn`), never React state — 88 cells
+are ~2,000 SVG nodes. Era membership is in `lib/constellationOrigins.ts` and verified to sum
+to exactly 88 (H13).
+
 **`permission-card`** — full-screen on `--canvas-night`. One `.type-display-lg` line, one
 `.type-body-lg` paragraph, one `.btn-ghost`, one `.type-caption` explaining why the permission
 is needed. Exactly one CTA, inherited directly from the benchmark. Failure variants name the

@@ -53,6 +53,12 @@ interface Props {
   /** 선택된 별의 카탈로그 인덱스. 크기·밝기를 올려 표시한다. */
   selectedStar: number | null;
   onOrient?: (q: THREE.Quaternion, fov: number) => void;
+  /**
+   * 타임랩스. 하늘 행렬을 매 프레임 정확히 풀고 보간하지 않는다.
+   * 샘플 사이를 slerp로 메우면 1초에 하루씩 돌릴 때 한 샘플 사이에 하늘이
+   * 24°씩 돌아, 보간이 짧은 쪽으로 질러가며 실제와 다른 궤적을 그린다.
+   */
+  timelapse?: boolean;
 }
 
 /**
@@ -68,6 +74,7 @@ function SkyGroupUpdater({
   lat,
   lon,
   fast,
+  exact,
 }: {
   groupRef: React.RefObject<THREE.Group | null>;
   skyMatRef: React.RefObject<THREE.Matrix4>;
@@ -75,6 +82,7 @@ function SkyGroupUpdater({
   lat: number;
   lon: number;
   fast: boolean;
+  exact: boolean;
 }) {
   const target = useRef(new THREE.Quaternion());
   const acc = useRef(999);
@@ -99,6 +107,14 @@ function SkyGroupUpdater({
   }, [sample, groupRef, skyMatRef]);
 
   useFrameSafe((delta) => {
+    if (exact) {
+      // 호출당 약 0.02ms(Node에서 측정). 매 프레임 풀어도 부담이 없다.
+      sample();
+      const g = groupRef.current;
+      if (g) g.quaternion.copy(target.current);
+      skyMatRef.current.makeRotationFromQuaternion(target.current);
+      return;
+    }
     // Rotation_EQJ_HOR은 세차·장동을 매번 다시 푸는 무거운 계산이다. 매 프레임
     // 부르면 시간여행 배속에서 p95가 20ms를 넘긴다. 정확한 값은 드물게 뽑고
     // 사이는 보간한다 — 손 인식(30Hz)을 60Hz로 이어 붙인 것과 같은 수법이다.
@@ -152,6 +168,7 @@ function SkyCanvas({
   aimedConstellation,
   selectedStar,
   onOrient,
+  timelapse = false,
 }: Props) {
   const groupRef = useRef<THREE.Group>(null);
   const [fast, setFast] = useState(false);
@@ -231,6 +248,7 @@ function SkyCanvas({
         lat={lat}
         lon={lon}
         fast={fast}
+        exact={timelapse}
       />
 
       {/* 관측자 고정: 지평선·자오선 (하늘 그룹 '밖') */}
@@ -280,7 +298,13 @@ function SkyCanvas({
           />
         )}
         {layers.bodies && (
-          <SolarBodies timeRef={timeRef} lat={lat} lon={lon} />
+          <SolarBodies
+            timeRef={timeRef}
+            lat={lat}
+            lon={lon}
+            // 1초에 하루씩 흐르면 1Hz 갱신으로는 달이 13°씩 건너뛴다
+            intervalS={timelapse ? 0.05 : 1}
+          />
         )}
         {/* 윤슬 — 하늘 그룹 '안'이어야 거울상이 하늘과 함께 돈다 */}
         {layers.horizon && <SeaGlitter catalog={catalog} tint={tint} />}

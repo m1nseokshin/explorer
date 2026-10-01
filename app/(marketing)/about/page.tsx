@@ -3,7 +3,8 @@ import AboutContent from "@/components/home/AboutContent";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "왜 이걸 만들었는지, 무엇을 실험했는지, 그리고 만든 사람에 대하여.",
+  description:
+    "점뿐인 밤하늘에 누가 언제 선을 그어 88개 별자리가 됐는지, 그리고 이 도구를 만든 이유.",
 };
 
 export default function AboutPage() {

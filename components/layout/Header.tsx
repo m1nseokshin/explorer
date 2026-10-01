@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n";
 import { nav, site } from "@/lib/content";
+import LogoMark from "./Logo";
 
 export default function Header() {
   const { lang, setLang, toggleLang } = useLanguage();
@@ -42,10 +43,13 @@ export default function Header() {
         }`}
       >
         <div className="flex items-center justify-between px-6 py-5 sm:px-12 md:px-16 lg:px-24">
-          {/* 모바일에서는 로고가 헤더 폭의 절반 가까이를 먹어 메뉴와 부딪힌다.
-              디스플레이 서체 + 넓은 자간이라 같은 px여도 체감 크기가 크다. */}
-          <Link href="/" className="type-display-lg text-base leading-none sm:text-lg md:text-xl">
-            {site.name}
+          {/* 글자 대신 마크. 44px 터치 영역 안에 28–32px로 둔다. 이름은 스크린리더용. */}
+          <Link
+            href="/"
+            aria-label={`${site.name} — ${lang === "ko" ? "홈" : "Home"}`}
+            className="-ml-2 flex h-11 w-11 items-center justify-center transition-opacity duration-300 hover:opacity-75"
+          >
+            <LogoMark size={30} className="sm:h-8 sm:w-8" />
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">

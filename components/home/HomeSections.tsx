@@ -16,8 +16,8 @@ export default function HomeSections() {
       nameEn: "Move Open Palm",
       actionKo: "하늘 끌기",
       actionEn: "Drag the sky",
-      descKo: "손바닥을 펴고 움직이면 밤하늘이 손을 따라옵니다. 카메라 화면 끝에 손을 대고 있으면 그 방향으로 계속 흘러 한 바퀴를 돌 수 있습니다.",
-      descEn: "Open your palm and move it — the night sky follows your hand. Hold it at the edge of the camera frame and the sky keeps drifting that way, all the way around.",
+      descKo: "손바닥을 펴고 움직이면 밤하늘이 손을 따라옵니다. 카메라 화면 끝에 손을 대고 있으면 하늘이 그쪽으로 계속 흘러 한 바퀴를 돌 수 있습니다.",
+      descEn: "Open your palm and move it, and the sky follows your hand. Hold it at the edge of the camera frame and the sky keeps drifting that way, all the way round.",
     },
     {
       glyph: "🤏",
@@ -26,8 +26,8 @@ export default function HomeSections() {
       nameEn: "Spread & Narrow",
       actionKo: "확대 · 축소",
       actionEn: "Zoom in / out",
-      descKo: "나머지 세 손가락을 접고 엄지와 검지를 벌리면 확대, 좁히면 축소됩니다. 벌린 만큼이 아니라 움직인 만큼 바뀌어서 어디서 시작해도 튀지 않습니다.",
-      descEn: "Fold the other three fingers, then spread thumb and index to zoom in or narrow them to zoom out. It follows the change, not the gap — so it never jumps when you start.",
+      descKo: "나머지 세 손가락을 접고 엄지와 검지를 벌리면 확대, 좁히면 축소됩니다. 벌어진 폭이 아니라 움직인 양만큼 바뀌므로 어느 자세에서 시작해도 화면이 튀지 않습니다.",
+      descEn: "Fold the other three fingers, then spread thumb and index to zoom in or narrow them to zoom out. It follows how far you move, not how wide the gap is, so it never jumps when you start.",
     },
     {
       glyph: "✊",
@@ -36,8 +36,8 @@ export default function HomeSections() {
       nameEn: "Close, Then Open",
       actionKo: "자세히 보기 · 닫기",
       actionEn: "Inspect · Close",
-      descKo: "조준선에 별을 맞추고 주먹을 쥐었다 펴면 그 별과 별자리의 유래·밝기·좌표가 열립니다. 설명은 읽는 속도로 조금씩 내려가고, 한 번 더 쥐었다 펴면 닫힙니다.",
-      descEn: "Aim the reticle, then close and open your hand to reveal the lore, brightness and position of what's there. The text scrolls at reading pace; do it again to close.",
+      descKo: "조준선에 별을 맞추고 주먹을 쥐었다 펴면 그 별과 별자리의 유래·밝기·좌표가 열립니다. 설명은 읽는 속도에 맞춰 조금씩 내려가고 한 번 더 쥐었다 펴면 닫힙니다.",
+      descEn: "Aim the reticle, then close and open your hand to read the story, brightness and position of what's there. The text scrolls at reading pace; do it again to close.",
     },
   ];
 
@@ -46,29 +46,29 @@ export default function HomeSections() {
       num: "8,874",
       labelKo: "실시간 항성",
       labelEn: "STARS IN SKY",
-      detailKo: "6.5등급 한계 등급까지의 히파르코스 카탈로그 기반 실제 항성",
-      detailEn: "Real catalogue stars down to magnitude 6.5 with precise B-V color temperature",
+      detailKo: "히파르코스 카탈로그에서 가져온 6.5등급까지의 실제 별",
+      detailEn: "Real Hipparcos stars down to magnitude 6.5, each coloured by its B−V index",
     },
     {
       num: "88",
       labelKo: "IAU 공식 별자리",
       labelEn: "CONSTELLATIONS",
-      detailKo: "전천 88개 별자리의 경계선, 대표 성도 연결선 및 천문 유래",
-      detailEn: "All 88 IAU constellation boundaries, classical figures, and ancient lore",
+      detailKo: "하늘 전체 88개 별자리의 경계선과 별자리선, 그리고 유래",
+      detailEn: "All 88 IAU boundaries, the figures that join their stars, and where each came from",
     },
     {
       num: "57",
       labelKo: "천측 항법 별",
       labelEn: "NAVIGATIONAL STARS",
-      detailKo: "망망대해의 항해사들이 육분의로 길을 찾던 공식 항법 57성 수록",
-      detailEn: "The 57 selected astronomical bodies historically sailed by marine almanacs",
+      detailKo: "항해사가 육분의로 고도를 재던 항해력의 항법별 57개",
+      detailEn: "The 57 stars of the Nautical Almanac that navigators measured with a sextant",
     },
     {
       num: "0.01°",
       labelKo: "계산 정밀도",
       labelEn: "PRECISION",
-      detailKo: "달의 지평시차(1°) 보정, 세차 및 장동, 지방항성시(LST) 실시간 해석",
-      detailEn: "Accurate to 0.01° with lunar topocentric parallax, nutation, and local sidereal time",
+      detailKo: "세차·장동·지방항성시(LST)를 실시간으로 풀고 달의 지평시차(1°)까지 보정",
+      detailEn: "Precession, nutation and local sidereal time solved live, plus the Moon's 1° parallax",
     },
   ];
 
@@ -89,8 +89,8 @@ export default function HomeSections() {
             <Reveal delay={0.16}>
               <p className="type-body-lg mt-6 text-pretty text-foreground-mute">
                 {t(
-                  "수천 년 동안 뱃사람은 바다 위에서 별의 높이를 재어 자기 위치를 얻었습니다. 이 제품은 그 계산을 거꾸로 돌렸습니다. 당신이 서 있는 자리의 위치를 받아, 지금 그곳의 하늘을 그립니다.",
-                  "For centuries sailors measured star altitudes to discover where they stood on Earth. We inverted that geometry. Give us your coordinates, and we reconstruct the exact celestial dome above your head.",
+                  "수천 년 동안 뱃사람은 바다 위에서 별의 높이를 재어 자기 위치를 알아냈습니다. 이 제품은 그 계산을 거꾸로 돌립니다. 지금 서 있는 자리를 받아 그곳의 하늘을 그립니다.",
+                  "For thousands of years sailors measured the height of stars to work out where they were. This runs that calculation backwards: it takes where you are standing and draws the sky above it.",
                 )}
               </p>
             </Reveal>
@@ -102,21 +102,21 @@ export default function HomeSections() {
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="type-eyebrow text-muted">{t("과거의 항해사", "The Navigator")}</span>
-                    <span className="type-mono-hud text-xs text-muted">기원전 ~ 20세기</span>
+                    <span className="type-mono-hud text-xs text-muted">{t("기원전 ~ 20세기", "Antiquity – 20th c.")}</span>
                   </div>
                   <h3 className="type-display-lg mt-4 text-xl sm:text-2xl">
                     {t("별의 고도 → 지구 위 위치", "Star Altitude → Geographic Position")}
                   </h3>
                   <p className="type-body-lg mt-5 text-sm leading-relaxed text-foreground-mute">
                     {t(
-                      "육분의로 북극성의 각도를 재면 위도가 나왔고, 크로노미터와 별의 남중 시각으로 경도를 풀었습니다. 별은 단순한 풍경이 아니라 바다 위 사람의 목숨이 달린 유일한 계기판이었습니다.",
-                      "The altitude of Polaris directly yielded latitude; the precise transit of known stars gave longitude. The stars were not scenic decoration — they were the sailor's primary navigational instruments.",
+                      "육분의로 북극성의 각도를 재면 위도가 나왔고 크로노미터와 별의 남중 시각으로 경도를 풀었습니다. 바다 위에서 별은 풍경이 아니었습니다. 목숨이 걸린 단 하나의 계기판이었습니다.",
+                      "Measure the angle of Polaris with a sextant and you had your latitude; a chronometer and the moment a star crossed the meridian gave longitude. At sea the stars were not scenery. They were the one instrument lives depended on.",
                     )}
                   </p>
                 </div>
                 <div className="mt-8 border-t border-hairline/60 pt-4">
                   <p className="type-caption text-xs text-muted">
-                    {t("도구: 육분의 · 천측력 57성 · 크로노미터", "Instruments: Sextant · Nautical Almanac · Chronometer")}
+                    {t("도구: 육분의 · 항해력 57성 · 크로노미터", "Instruments: sextant · Nautical Almanac · chronometer")}
                   </p>
                 </div>
               </div>
@@ -127,10 +127,10 @@ export default function HomeSections() {
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="type-eyebrow" style={{ color: "var(--accent-reticle)" }}>
-                      {t("현대의 익스플로러", "Explorer Today")}
+                      {t("지금의 익스플로러", "Explorer today")}
                     </span>
                     <span className="type-mono-hud text-xs" style={{ color: "var(--accent-reticle)" }}>
-                      실시간 천체역학
+                      {t("실시간 계산", "Computed live")}
                     </span>
                   </div>
                   <h3 className="type-display-lg mt-4 text-xl sm:text-2xl">
@@ -138,14 +138,14 @@ export default function HomeSections() {
                   </h3>
                   <p className="type-body-lg mt-5 text-sm leading-relaxed text-foreground-mute">
                     {t(
-                      "지금 계신 곳의 위도와 경도를 입력하면, 세차·장동·지방항성시를 풀어 실시간 천구를 그립니다. 도감의 평면 그림이 아니라, 지금 창밖 고개를 들었을 때 그 자리에 있는 실제 별입니다.",
-                      "Input your coordinates, and we compute axial precession, nutation, and local sidereal time. Not a static illustration, but the precise celestial bodies hanging overhead right this second.",
+                      "지금 계신 곳의 위도와 경도를 넣으면 세차·장동·지방항성시를 풀어 이 순간의 하늘을 그립니다. 창밖으로 고개를 들면 보일 바로 그 자리의 별들입니다.",
+                      "Enter your latitude and longitude and it solves precession, nutation and local sidereal time to draw the sky as it is right now: the same stars you would see if you looked out of the window.",
                     )}
                   </p>
                 </div>
                 <div className="mt-8 border-t border-hairline/60 pt-4">
                   <p className="type-caption text-xs text-muted">
-                    {t("계산: 천문 엔진 0.01° 정밀도 · 달 지평시차 보정", "Engine: Astronomy Engine 0.01° · Topocentric Parallax")}
+                    {t("계산: Astronomy Engine · 0.01° 정밀도 · 달 지평시차 보정", "Engine: Astronomy Engine · 0.01° · lunar parallax")}
                   </p>
                 </div>
               </div>
@@ -163,14 +163,14 @@ export default function HomeSections() {
             </Reveal>
             <Reveal delay={0.08}>
               <h2 className="type-display-lg mt-3 text-balance">
-                {t("버튼 대신, 손짓으로 하늘을 젓다", "No buttons — sailed by your hand")}
+                {t("버튼 대신 손짓으로 하늘을 젓다", "No buttons. You sail it by hand")}
               </h2>
             </Reveal>
             <Reveal delay={0.16}>
               <p className="type-body-lg mt-6 text-pretty text-foreground-mute">
                 {t(
-                  "손동작 인터페이스에는 버튼이 없습니다. 무엇을 할 수 있는지 화면이 먼저 말해 주고, 내 손이 잡히고 있다는 걸 되비쳐 주어야 합니다. 세 가지 제스처로 하늘을 항해합니다.",
-                  "A gesture interface has no buttons. The interface must teach you its language and mirror back what it sees. Three gestures drive the entire voyage.",
+                  "손동작 인터페이스에는 버튼이 없습니다. 그래서 무엇을 할 수 있는지 화면이 먼저 말해 주고 내 손이 잡히고 있다는 걸 계속 보여 줘야 합니다. 제스처는 세 가지뿐입니다.",
+                  "A gesture interface has no buttons, so the screen has to tell you what is possible and keep showing that it can see your hand. There are only three gestures.",
                 )}
               </p>
             </Reveal>
@@ -210,8 +210,8 @@ export default function HomeSections() {
             <div className="mt-8 rounded-xl border border-hairline/60 bg-surface/30 px-6 py-4 text-center">
               <p className="type-caption text-xs text-muted">
                 {t(
-                  "카메라는 사용자의 손 관절 좌표(21개 랜드마크)를 브라우저 로컬에서 계산하는 데만 쓰입니다. 영상은 어디에도 저장되거나 외부로 전송되지 않습니다.",
-                  "The camera computes 21 hand landmarks entirely in your local browser sandbox. Video frames are never stored, transmitted, or displayed.",
+                  "카메라 영상은 브라우저 안에서 손 관절 21개의 좌표를 계산하는 데만 씁니다. 영상은 저장하지 않고 기기 밖으로 보내지도 않습니다.",
+                  "The camera feed is used only to find 21 hand landmarks, inside your browser. The video is never stored, shown or sent anywhere.",
                 )}
               </p>
             </div>
@@ -228,14 +228,14 @@ export default function HomeSections() {
             </Reveal>
             <Reveal delay={0.08}>
               <h2 className="type-display-lg mt-3 text-balance">
-                {t("모르는 숫자는 적지 않습니다", "Exact numbers, zero speculation")}
+                {t("모르는 숫자는 적지 않습니다", "No number we can't back up")}
               </h2>
             </Reveal>
             <Reveal delay={0.16}>
               <p className="type-body-lg mt-6 text-pretty text-foreground-mute">
                 {t(
-                  "모든 별의 좌표, 겉보기 등급, 색지수(B−V), 고유 명칭은 국제천문연맹(IAU) 공인 데이터베이스와 대조 검증을 거쳤습니다. 342개의 자동 테스트가 매 빌드마다 하늘의 물리 법칙을 검증합니다.",
-                  "Coordinates, apparent magnitudes, B-V color indices, and proper names are rigorously verified against IAU catalogues. 342 automated checks lock every celestial equation.",
+                  "별의 좌표·겉보기 등급·색지수(B−V)·고유명은 국제천문연맹(IAU) 자료와 대조했습니다. 코드를 고칠 때마다 자동 검사 359개가 계산을 처음부터 다시 확인합니다.",
+                  "Positions, magnitudes, B−V colour indices and proper names are checked against IAU data, and 359 automated checks rerun the calculations every time the code changes.",
                 )}
               </p>
             </Reveal>
@@ -276,8 +276,8 @@ export default function HomeSections() {
             <Reveal delay={0.16}>
               <p className="type-body-lg mt-6 text-pretty text-foreground-mute">
                 {t(
-                  "목적에 따라 두 가지 방식으로 밤하늘을 항해할 수 있습니다.",
-                  "Explore the sky in two distinct navigational modes tailored to your curiosity.",
+                  "밤하늘을 항해하는 방법은 두 가지입니다.",
+                  "There are two ways to sail the sky.",
                 )}
               </p>
             </Reveal>
@@ -298,8 +298,8 @@ export default function HomeSections() {
                   </h3>
                   <p className="type-body-lg mt-4 text-sm leading-relaxed text-foreground-mute">
                     {t(
-                      "지금 당신이 서 있는 관측지의 실제 시각과 밤하늘을 보여줍니다. 시간 왜곡 없이, 지금 고개를 들었을 때 머리 위에 떠 있는 천체를 그대로 확인하는 실시간 관측입니다.",
-                      "Displays the true celestial vault above your current coordinates right now. Free from temporal distortion, mirroring exactly what lies beyond your ceiling.",
+                      "지금 서 계신 곳의 실제 시각과 하늘을 보여 줍니다. 시간은 건드릴 수 없어서, 화면에 뜬 천체가 곧 지금 고개를 들면 머리 위에 있는 천체입니다.",
+                      "The real sky above where you are, at the real time. You can't change the clock here, so what is on screen is what is overhead if you step outside.",
                     )}
                   </p>
                 </div>
@@ -329,8 +329,8 @@ export default function HomeSections() {
                   </h3>
                   <p className="type-body-lg mt-4 text-sm leading-relaxed text-foreground-mute">
                     {t(
-                      "시간 제어기를 얹어 과거나 미래의 밤하늘로 떠납니다. 1배속부터 최대 10,000배속까지 가속하며 별자리의 일주 운동과 계절에 따른 천체의 궤적 변화를 한눈에 관측합니다.",
-                      "Unlock the temporal scrubber to sail into past or future epochs. Accelerate up to 10,000× to witness diurnal rotation, planetary wandering, and seasonal shifts.",
+                      "같은 하늘에 시간 조절만 더했습니다. 실시간부터 1초에 1주씩 흐르는 속도까지 올려 가며 별자리가 하룻밤 도는 모습과 계절 따라 바뀌는 하늘을 볼 수 있습니다.",
+                      "The same sky with a clock you can run. Speed it up from real time to a week per second and watch the stars wheel overnight, the planets wander and the seasons turn.",
                     )}
                   </p>
                 </div>
@@ -363,8 +363,8 @@ export default function HomeSections() {
           <Reveal delay={0.16}>
             <p className="type-body-lg mt-6 text-pretty text-foreground-mute">
               {t(
-                "별을 보던 오래된 도구를 손에 쥐고, 당신의 위치에서 하늘을 항해해 보세요.",
-                "Take this ancient instrument into your hands, and sail the sky above your position.",
+                "별을 읽던 오래된 도구를 손에 쥐고 지금 서 있는 곳의 하늘을 항해해 보세요.",
+                "Take the old instrument in hand and sail the sky above where you stand.",
               )}
             </p>
           </Reveal>

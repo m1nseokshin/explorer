@@ -379,12 +379,12 @@ export default function LocationPicker({
                 <p className="type-caption mt-2 text-center text-muted">
                   {gpsStatus === "denied"
                     ? t(
-                        "브라우저가 위치 권한을 막았습니다. 주소창의 자물쇠에서 허용하거나, 위 지도에서 직접 짚으세요.",
+                        "브라우저가 위치 권한을 막았습니다. 주소창의 자물쇠에서 허용하거나 위 지도에서 직접 짚으세요.",
                         "The browser blocked location access. Allow it from the lock icon in the address bar, or pick a spot on the map above.",
                       )
                     : t(
-                        "위치를 확인하지 못했습니다. 기기의 위치 서비스가 꺼져 있을 수 있습니다 — 위 지도에서 직접 짚으셔도 됩니다.",
-                        "Couldn't get a fix. Location services may be off on this device — you can also pick a spot on the map above.",
+                        "위치를 확인하지 못했습니다. 기기의 위치 서비스가 꺼져 있을 수 있습니다. 위 지도에서 직접 짚으셔도 됩니다.",
+                        "Couldn't find your location. Location services may be off on this device; you can also pick a spot on the map above.",
                       )}
                 </p>
               )}

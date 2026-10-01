@@ -64,6 +64,8 @@ interface Props {
   onZoomChange?: (zoom: number) => void;
   /** 탭(드래그가 아닌) 시 NDC 좌표를 넘긴다. */
   onTap?: (ndcX: number, ndcY: number) => void;
+  /** 가장 넓게 볼 수 있는 배율. 타임랩스는 하늘을 넓게 담으려고 1보다 낮춘다. */
+  minZoom?: number;
 }
 
 const MIN_ZOOM = 1;
@@ -90,6 +92,7 @@ export default function VirtualControls({
   enabled,
   onZoomChange,
   onTap,
+  minZoom = MIN_ZOOM,
 }: Props) {
   const azRef = useRef(0); // 도, 북=0
   const altRef = useRef(20);
@@ -134,7 +137,7 @@ export default function VirtualControls({
     apply();
 
     const setZoom = (z: number) => {
-      const next = THREE.MathUtils.clamp(z, MIN_ZOOM, MAX_ZOOM);
+      const next = THREE.MathUtils.clamp(z, minZoom, MAX_ZOOM);
       zoomRef.current = next;
       // 가상 모드에도 같은 FOV 공식을 쓴다 — AR 모드로 전환해도 화각이 튀지 않는다.
       const tanH = Math.tan((DEFAULT_H_FOV_DEG * Math.PI) / 360);
@@ -287,7 +290,7 @@ export default function VirtualControls({
       el.removeEventListener("wheel", onWheel);
       cmdRef.current = null;
     };
-  }, [targetRef, enabled, quatRef, fovRef, zoomRef, followTauRef, onZoomChange, onTap]);
+  }, [targetRef, enabled, quatRef, fovRef, zoomRef, followTauRef, onZoomChange, onTap, minZoom]);
 
   return null;
 }

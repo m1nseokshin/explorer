@@ -57,8 +57,8 @@ export default function HomeHero() {
           className="type-body-lg mt-8 max-w-xl text-pretty text-foreground-mute"
         >
           {t(
-            "수천 년 동안 뱃사람은 별을 보고 자기 위치를 알아냈습니다. 북극성의 고도가 곧 위도였습니다. 그 오래된 도구를, 지금 당신이 서 있는 자리의 하늘로 되돌려 놓았습니다. 항해는 손으로 합니다.",
-            "For thousands of years sailors fixed their position by the stars — the altitude of Polaris simply was your latitude. This puts that old instrument back in your hands, aimed at the sky above wherever you happen to be standing. You sail it with your hand.",
+            "수천 년 동안 뱃사람은 별을 보고 자기 위치를 알아냈습니다. 북극성의 고도가 곧 위도였습니다. 그 오래된 도구를 지금 서 있는 자리의 하늘에 맞춰 다시 만들었습니다. 항해는 손으로 합니다.",
+            "For thousands of years sailors fixed their position by the stars. The altitude of Polaris was your latitude. This rebuilds that old instrument for the sky above wherever you are standing, and you sail it with your hand.",
           )}
         </motion.p>
         <motion.div {...rise(0.32)} className="pointer-events-auto mt-12 flex flex-wrap items-center justify-center gap-4">
